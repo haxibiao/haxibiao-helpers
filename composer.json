@@ -1,0 +1,33 @@
+{
+    "name": "haxibiao/helper",
+    "description": "哈希表通用帮助函数和类",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ivan",
+            "email": "ivan@haxibiao.com"
+        }
+    ],
+    "require": {
+        "simplesoftwareio/simple-qrcode": "^2.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": {
+            "haxibiao\\helper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "haxibiao\\helper\\HXBHelpersProvider"
+            ]
+        }
+    }
+}

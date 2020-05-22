@@ -1,12 +1,12 @@
 <?php
-namespace App\Helpers;
+namespace haxibiao\helper;
 
 use App\Exceptions\UserException;
-use App\Helpers\WechatMgUtils;
 use App\OAuth;
 use App\User;
 use App\Wallet;
 use GuzzleHttp\Client;
+use haxibiao\helper\WechatMgUtils;
 use Illuminate\Support\Arr;
 
 /** inner class 1 --------------------- */

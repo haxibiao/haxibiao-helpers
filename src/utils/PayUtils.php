@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Helpers;
+namespace haxibiao\helper;
 
-use App\Helpers\OAuthUtils;
 use Exception;
+use haxibiao\helper\OAuthUtils;
 use Yansongda\Pay\Pay;
 
 /**

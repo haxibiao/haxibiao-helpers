@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Helpers;
+namespace haxibiao\helper;
 
 use anerg\OAuth2\OAuth as SnsOAuth;
 use App\Exceptions\UserException;
-use App\Helpers\TikTokUtils;
-use App\Helpers\WechatUtils;
 use App\OAuth;
 use App\User;
 use App\Wallet;
 use App\Withdraw;
+use haxibiao\helper\TikTokUtils;
+use haxibiao\helper\WechatUtils;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 

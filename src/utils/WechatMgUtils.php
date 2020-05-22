@@ -1,8 +1,8 @@
 <?php
-namespace App\Helpers;
+namespace haxibiao\helper;
 
-use App\Helpers\WXBizDataCrypt;
 use GuzzleHttp\Client;
+use haxibiao\helper\WXBizDataCrypt;
 use Illuminate\Support\Arr;
 
 //微信小程序用

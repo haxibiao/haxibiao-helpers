@@ -1,5 +1,6 @@
 <?php
-namespace App\Helpers\FFMpeg;
+
+namespace haxibiao\helper;
 
 use Illuminate\Support\Facades\Storage;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace haxibiao\helper;
 
 use QcloudApi;
 
@@ -8,7 +8,7 @@ use QcloudApi;
  * 腾讯VOD视频上传助手类
  *
  * Class VodUtils
- * @package App\Helpers
+ * @package haxibiao\helper
  */
 class VodUtils
 {

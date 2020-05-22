@@ -1,6 +1,5 @@
 <?php
-
-namespace App\Helpers;
+namespace haxibiao\helper;
 
 class AdUtils
 {

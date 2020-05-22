@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace haxibiao\helper;
 
 use GuzzleHttp\Client;
 

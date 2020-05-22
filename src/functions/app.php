@@ -1,10 +1,16 @@
 <?php
 
+use App\Exceptions\GQLException;
 use App\Exceptions\UserException;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+function project_is_dtzq(){
+    return Str::contains(config('app.name'), 'datizhuanqian');
+}
 
 function getLatestAppVersion()
 {
@@ -18,24 +24,49 @@ function get_domain()
 
 function small_logo()
 {
-    return '/picture/logo.png';
+    if(project_is_dtzq()){
+        return '/picture/logo.png';
+    }
+
+    $logo = \App\Aso::getValue('下载页', 'logo');
+    if (empty($logo)) {
+        return '/logo/' . env('APP_DOMAIN') . '.small.png';
+    } else {
+        return $logo;
+    }
 }
 
 //兼容网页
 function qrcode_url()
 {
-    $apkUrl = "http://datizhuanqian.com/download"; //TODO: env?
-    $logo   = small_logo();
+    if(project_is_dtzq()){
+        $apkUrl = "http://datizhuanqian.com/download"; //TODO: env?
+    } else {
+        $apkUrl = \App\Aso::getValue('下载页', '安卓地址');
+    }
+    $logo = small_logo();
     $qrcode = QrCode::format('png')->size(250)->encoding('UTF-8');
-    $qrcode->merge(public_path($logo), .1, true);
+    if (str_contains($logo, env('COS_DOMAIN'))) {
+        $qrcode->merge($logo, .1, true);
+    } else {
+        if (file_exists(public_path($logo))) {
+            $qrcode->merge(public_path($logo), .1, true);
+        }
+    }
     $qrcode = $qrcode->generate($apkUrl);
-    $path   = base64_encode($qrcode);
-    return $path;
+    return base64_encode($qrcode);
 }
 
 //检查是否备案期间
 function isRecording()
 {
+    $config = \App\AppConfig::where([
+        'group' => 'record',
+        'name'  => 'web',
+    ])->first();
+    if ($config && $config->state === \App\AppConfig::STATUS_ON) {
+        return true;
+    }
     return false;
 }
 
@@ -247,3 +278,186 @@ function get_device_id()
     //这个是前端返回的设备唯一ID
     return request()->header('uniqueId') ?? request()->get('uniqueId');
 }
+
+function cdnurl($path)
+{
+    if (!is_prod() && file_exists(public_path($path))) {
+        return url($path);
+    }
+    $path = "/" . $path;
+    $path = str_replace('//', '/', $path);
+    return "http://" . env('COS_DOMAIN') . $path;
+}
+
+function is_prod()
+{
+    return env('APP_ENV') == 'prod';
+}
+
+/**
+ * 首页的文章列表
+ * @return collection([article]) 包含分页信息和移动ＶＵＥ等优化的文章列表
+ */
+function indexArticles()
+{
+    $qb = Article::from('articles')
+        ->with('user')->with('category')
+        ->exclude(['body', 'json'])
+        ->where('status', '>', 0)
+        ->whereNull('source_url')
+        ->whereNotNull('category_id')
+        ->orderBy('updated_at', 'desc');
+    $total    = count($qb->get());
+    $articles = $qb->offset((request('page', 1) * 10) - 10)
+        ->take(10)
+        ->get();
+
+    //过滤置顶的文章
+    $stick_article_ids = array_column(get_stick_articles('发现'), 'id');
+    $filtered_articles = $articles->filter(function ($article, $key) use ($stick_article_ids) {
+        return !in_array($article->id, $stick_article_ids);
+    })->all();
+
+    $articles = [];
+    foreach ($filtered_articles as $article) {
+        $articles[] = $article;
+    }
+
+    //移动端，用简单的分页样式
+    if (isMobile()) {
+        $articles = new Paginator($articles, 10);
+        $articles->hasMorePagesWhen($total > request('page') * 10);
+    } else {
+        $articles = new LengthAwarePaginator($articles, $total, 10);
+    }
+    return $articles;
+}
+
+/**
+ * 过滤多余文字，只留下 链接
+ *
+ * @param [type] $str
+ * @return void
+ * @author zengdawei
+ */
+function filterText($str)
+{
+    if (empty($str) || $str == '' || is_null($str)) {
+        throw new GQLException('分享链接是空的，请检查是否有误噢');
+    }
+
+    $regex = '@(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))@';
+
+    if (preg_match($regex, $str, $match)) {
+        return $match;
+    } else {
+        throw new GQLException('分享链接失效了，请检查是否有误噢');
+    }
+
+}
+
+function adIsOpened()
+{
+    $os     = request()->header('os', 'android');
+    $config = \App\AppConfig::where([
+        'group' => $os,
+        'name'  => 'ad',
+    ])->first();
+    if ($config && $config->state === \App\AppConfig::STATUS_OFF) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
+ * 获取文件大小信息
+ * @param $bytes
+ * @return string
+ */
+function formatSizeUnits($bytes)
+{
+    if ($bytes >= 1073741824) {
+        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+    } elseif ($bytes >= 1048576) {
+        $bytes = number_format($bytes / 1048576, 2) . ' MB';
+    } elseif ($bytes >= 1024) {
+        $bytes = number_format($bytes / 1024, 2) . ' KB';
+    } elseif ($bytes > 1) {
+        $bytes = $bytes . ' MB';
+    } elseif ($bytes == 1) {
+        $bytes = $bytes . ' byte';
+    } else {
+        $bytes = '0 bytes';
+    }
+
+    return $bytes;
+}
+
+/**
+ *
+ * 随机算法
+ *
+ * 假设我们有这样一个数组[ 'withdraw01'=>5, 'withdraw02'=>5, 'withdraw03'=>10]
+ * withdraw01概率25%，withdraw02奖概率25%，withdraw03奖概率50%
+ *
+ * @param $plucked
+ * @return int|string|null
+ */
+function getRand($plucked)
+{
+    $luckId  = null;
+    $sumRate = array_sum($plucked);
+    foreach ($plucked as $key => $value) {
+        $randNum = mt_rand(1, $sumRate);
+        if ($randNum <= $value) {
+            $luckId = $key;
+            break;
+        } else {
+            $sumRate -= $value;
+        }
+    }
+    return $luckId;
+}
+
+function seo_value($group, $name)
+{
+    return \App\Seo::getValue($group, $name);
+}
+
+function aso_value($group, $name)
+{
+    return \App\Aso::getValue($group, $name);
+}
+
+function getVodConfig(string $key)
+{
+    $appName = env('APP_NAME');
+    $name    = sprintf('tencentvod.%s.%s', $appName, $key);
+    return config($name);
+}
+
+function stopfunction($name)
+{
+    \App\FunctionSwitch::close_function($name);
+}
+
+function getDownloadUrl()
+{
+    $apkUrl = \App\Aso::getValue('下载页', '安卓地址');
+    if (is_null($apkUrl) || empty($apkUrl)) {
+        return null;
+    }
+    return $apkUrl;
+}
+
+function is_local_env()
+{
+    return config('app.env') == 'local';
+}
+
+function is_dev_env()
+{
+    return config('app.env') == 'dev';
+}
+

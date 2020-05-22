@@ -108,3 +108,8 @@ function getUniqueUserId()
         return getIp();
     }
 }
+
+function app_track_app_download()
+{
+    app_track_user('App下载','app_download');
+}

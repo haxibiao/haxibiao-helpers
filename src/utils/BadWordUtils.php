@@ -41,7 +41,7 @@ class BadWordUtils
         return self::$instance;
     }
 
-    public static function check($text, $strict = false)
+    public static function check($text)
     {
         if (self::getInstance()) {
             preg_match_all("/[\x{4e00}-\x{9fc2}]/iu", $text, $match);
@@ -53,25 +53,6 @@ class BadWordUtils
             }
 
         }
-        //     // //严格模式 分词匹配
-        //     // if ($strict) {
-        //     //     $wordArr  = (new VicWord(extension_loaded('igbinary') ? 'igb' : 'json'))->getWord($text);
-        //     //     $badWords = [];
-        //     //     foreach ($wordArr as $word) {
-        //     //         if (mb_strlen($word[0], 'utf8') > 1) {
-        //     //             $badWords = $word[0];
-        //     //             break;
-        //     //         }
-        //     //     }
-
-        //     //     if (count($badWords) > 0) {
-        //     //         foreach ($badWords as $badWord) {
-
-        //     //         }
-        //     //     }
-
-        //     // }
-        // }
     }
 
     public static function addWord($text)

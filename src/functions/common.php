@@ -1,5 +1,6 @@
 <?php
 
+use haxibiao\helper\QcloudUtils;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
@@ -39,7 +40,7 @@ function is_testing_env()
 
 function is_prod_env()
 {
-    $environment = ['prod', 'production'];
+    $environment = ['prod', 'production','hotfix'];
     return in_array(config('app.env'), $environment);
 }
 
@@ -340,7 +341,7 @@ function processVideo($video)
     //如果还没有截图 就重新执行调用截图接口
     if (!$video->cover && !empty($video->qcvod_fileid)) {
         $duration = $video->duration > 9 ? 9 : $video->duration;
-        \App\Helpers\QcloudUtils::makeCoverAndSnapshots($video->qcvod_fileid, $duration);
+        QcloudUtils::makeCoverAndSnapshots($video->qcvod_fileid, $duration);
     }
 }
 

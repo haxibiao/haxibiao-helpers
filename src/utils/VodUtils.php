@@ -25,7 +25,21 @@ class VodUtils
     private static function retryVodApi($apiAction, $params)
     {
         $vod = self::initVod();
-        return $vod->$apiAction($params);
+        for ($retry = 0; $retry < 3; $retry++) {
+            if ($retry > 0) {
+                echo "$apiAction retry at " . $retry;
+            }
+            $response = $vod->$apiAction($params);
+            if ($response == false) {
+                $error = $vod->getError();
+                echo "$apiAction failed, code: " . $error->getCode() .
+                    ", message: " . $error->getMessage() .
+                    "ext: " . var_export($error->getExt(), true) . "\n";
+                continue;
+            } else {
+                return $response;
+            }
+        }
     }
 
     public static function getTaskInfo($taskId)
@@ -192,5 +206,35 @@ class VodUtils
             $i++;
         }
         return self::retryVodApi('ConfirmEvent', $params);
+    }
+
+    public static function makeCoverAndSnapshots($fileId, $duration = null)
+    {
+        $maxDuration = $duration > 9 ? 9 : $duration;
+        $timeOffsets = [];
+        for ($seconds = 1; $seconds <= $maxDuration; $seconds++) {
+            $timeOffsets['snapshotByTimeOffset.timeOffset.' . $seconds] = $seconds * 1000;
+        }
+        $params = array_merge([
+            'fileId'                          => $fileId,
+            'snapshotByTimeOffset.definition' => 10, //截取9张正常缩放的图片
+        ],
+            $timeOffsets,
+            [
+                'coverBySnapshot.definition'   => 10, //截取封面
+                'coverBySnapshot.positionType' => 'Time',
+                'coverBySnapshot.position'     => 2, // 第2秒截图做默认封面
+            ]);
+        return self::retryVodApi('ProcessFile', $params);
+    }
+
+    public static function convertVodFile($fileId)
+    {
+        $params = [
+            'fileId'       => $fileId,
+            'isScreenshot' => 0,
+            'isWatermark'  => 0,
+        ];
+        return self::retryVodApi('ConvertVodFile', $params);
     }
 }

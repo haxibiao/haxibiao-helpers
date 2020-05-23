@@ -32,12 +32,14 @@ function wrapMatomoEventData($event)
     //传给自定义变量 服务器
     $event['server'] = gethostname();
 
-    $event['dimension1'] = getOsSystemVersion(); //设备系统带版本
-    $event['dimension2'] = get_referer(); //下载渠道
-    $event['dimension3'] = getAppVersion(); //版本
-    $event['dimension4'] = getAppVersion() . "(build" . getAppBuild() . ")"; //热更新
-    $event['dimension5'] = User::categoryTag(); //新老用户分类
-    $event['dimension6'] = getDeviceBrand(); //用户机型品牌
+    if(project_is_dtzq()){
+        $event['dimension1'] = getOsSystemVersion(); //设备系统带版本
+        $event['dimension2'] = get_referer(); //下载渠道
+        $event['dimension3'] = getAppVersion(); //版本
+        $event['dimension4'] = getAppVersion() . "(build" . getAppBuild() . ")"; //热更新
+        $event['dimension5'] = User::categoryTag(); //新老用户分类
+        $event['dimension6'] = getDeviceBrand(); //用户机型品牌
+    }
 
     $event['siteId'] = env('MATOMO_SITE_ID', 1);
     return $event;
@@ -49,7 +51,7 @@ function sendMatomoEvent(array $event)
     try {
         $client = new \swoole_client(SWOOLE_SOCK_TCP); //同步阻塞？？
         //默认0.1秒就timeout, 所以直接丢给本地matomo:server
-        $client->connect('127.0.0.1', 9502) or die("swoole connect failed\n");
+        $client->connect('127.0.0.1', env('MATOMO_PROXY_PORT',9502)) or die("swoole connect failed\n");
         $client->set([
             'open_length_check'     => true,
             'package_length_type'   => 'n',
@@ -112,4 +114,9 @@ function getUniqueUserId()
 function app_track_app_download()
 {
     app_track_user('App下载','app_download');
+}
+
+function app_track_send_message()
+{
+    app_track_user('发送消息');
 }

@@ -1,12 +1,20 @@
 <?php
 
+use App\Article;
 use App\Exceptions\GQLException;
 use App\Exceptions\UserException;
 use App\User;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+function get_user_agent()
+{
+    return request()->header('userAgent') ?? request()->get('userAgent');
+}
 
 function project_is_dtzq(){
     return Str::contains(config('app.name'), 'datizhuanqian');
@@ -281,9 +289,6 @@ function get_device_id()
 
 function cdnurl($path)
 {
-    if (!is_prod() && file_exists(public_path($path))) {
-        return url($path);
-    }
     $path = "/" . $path;
     $path = str_replace('//', '/', $path);
     return "http://" . env('COS_DOMAIN') . $path;
@@ -459,5 +464,18 @@ function is_local_env()
 function is_dev_env()
 {
     return config('app.env') == 'dev';
+}
+
+function douyinOpen()
+{
+    $config = \App\Config::where([
+        'name' => 'douyin',
+    ])->first();
+    if ($config && $config->value === \App\Config::CONFIG_OFF) {
+        return false;
+    } else {
+        return true;
+    }
+
 }
 

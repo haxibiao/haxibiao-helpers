@@ -267,4 +267,50 @@ function get_qzone_pic($qq)
     return 'https://qlogo2.store.qq.com/qzonelogo/' . $qq . '/1/' . time();
 }
 
+function match($str)
+{
+    return true;
+}
 
+function get_top_nav_bg()
+{
+    if (get_domain() == 'dianmoge.com') {
+        return 'background-color: #000000';
+    }
+    if (get_domain() == 'dongmeiwei.com') {
+        return 'background-color: #9d2932';
+    }
+    if (get_domain() == 'ainicheng.com') {
+        return 'background-color: #3b5795';
+    }
+    if (get_domain() == 'qunyige.com') {
+        return 'background-color: #f796c9';
+    }
+
+    return '';
+}
+
+function get_top_nav_color()
+{
+    if (get_domain() == 'ainicheng.com') {
+        return 'color: white';
+    }
+    if (get_domain() == 'dianmoge.com') {
+        return 'color: white';
+    }
+    if (get_domain() == 'dongmeiwei.com') {
+        return 'color: white';
+    }
+    return '';
+}
+
+function get_full_url($path)
+{
+    if (empty($path)) {
+        return '';
+    }
+    if (starts_with($path, 'http')) {
+        return $path;
+    }
+    return env('APP_URL') . $path;
+}

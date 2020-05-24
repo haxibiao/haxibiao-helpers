@@ -20,6 +20,10 @@ class HXBHelperProvider extends ServiceProvider
         foreach (glob($src_path . '/utils/*/*.php') as $filename) {
             require_once $filename;
         }
+        // Register Commands
+        $this->commands([
+            InstallCommand::class,
+        ]);
     }
 
     /**

@@ -30,11 +30,6 @@ function get_domain()
     return env('APP_DOMAIN');
 }
 
-function is_phone_number($number)
-{
-    return str_start($number, 1) && strlen($number) == 11;
-}
-
 function small_logo()
 {
     if(project_is_dtzq()){

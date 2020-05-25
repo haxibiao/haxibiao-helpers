@@ -16,7 +16,8 @@ function get_user_agent()
     return request()->header('userAgent') ?? request()->get('userAgent');
 }
 
-function project_is_dtzq(){
+function project_is_dtzq()
+{
     return Str::contains(config('app.name'), 'datizhuanqian');
 }
 
@@ -32,7 +33,7 @@ function get_domain()
 
 function small_logo()
 {
-    if(project_is_dtzq()){
+    if (project_is_dtzq()) {
         return '/picture/logo.png';
     }
 
@@ -47,7 +48,7 @@ function small_logo()
 //兼容网页
 function qrcode_url()
 {
-    if(project_is_dtzq()){
+    if (project_is_dtzq()) {
         $apkUrl = "http://datizhuanqian.com/download"; //TODO: env?
     } else {
         $apkUrl = \App\Aso::getValue('下载页', '安卓地址');
@@ -70,7 +71,7 @@ function isRecording()
 {
     $config = \App\AppConfig::where([
         'group' => 'record',
-        'name'  => 'web',
+        'name' => 'web',
     ])->first();
     if ($config && $config->state === \App\AppConfig::STATUS_ON) {
         return true;
@@ -99,6 +100,9 @@ function getUser($throw = true)
     //已登录
     if (Auth::check()) {
         return Auth::user();
+    }
+    if (auth('api')->user()) {
+        return auth('api')->user();
     }
 
     //APP的场景
@@ -169,7 +173,7 @@ function appCanReview()
 function hasBadWords($text)
 {
     try {
-        $badWords      = file_get_contents(base_path('filter-question-keywords.json'));
+        $badWords = file_get_contents(base_path('filter-question-keywords.json'));
         $badWordsArray = json_decode($badWords, true);
     } catch (\Exception $ex) {
         return false;
@@ -199,8 +203,8 @@ function isAndroidApp()
 
 function getOsSystemVersion()
 {
-    $os             = getAppOS();
-    $os_version     = request()->header('systemVersion') ?? "未知版本";
+    $os = getAppOS();
+    $os_version = request()->header('systemVersion') ?? "未知版本";
     $os_and_version = $os . " " . $os_version;
     return $os_and_version;
 }
@@ -312,7 +316,7 @@ function indexArticles()
         ->whereNull('source_url')
         ->whereNotNull('category_id')
         ->orderBy('updated_at', 'desc');
-    $total    = count($qb->get());
+    $total = count($qb->get());
     $articles = $qb->offset((request('page', 1) * 10) - 10)
         ->take(10)
         ->get();
@@ -363,10 +367,10 @@ function filterText($str)
 
 function adIsOpened()
 {
-    $os     = request()->header('os', 'android');
+    $os = request()->header('os', 'android');
     $config = \App\AppConfig::where([
         'group' => $os,
-        'name'  => 'ad',
+        'name' => 'ad',
     ])->first();
     if ($config && $config->state === \App\AppConfig::STATUS_OFF) {
         return false;
@@ -411,7 +415,7 @@ function formatSizeUnits($bytes)
  */
 function getRand($plucked)
 {
-    $luckId  = null;
+    $luckId = null;
     $sumRate = array_sum($plucked);
     foreach ($plucked as $key => $value) {
         $randNum = mt_rand(1, $sumRate);
@@ -438,7 +442,7 @@ function aso_value($group, $name)
 function getVodConfig(string $key)
 {
     $appName = env('APP_NAME');
-    $name    = sprintf('tencentvod.%s.%s', $appName, $key);
+    $name = sprintf('tencentvod.%s.%s', $appName, $key);
     return config($name);
 }
 
@@ -478,4 +482,3 @@ function douyinOpen()
     }
 
 }
-

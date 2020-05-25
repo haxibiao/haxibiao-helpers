@@ -165,7 +165,7 @@ function count_words($body)
 {
     $body_text = strip_tags($body);
     preg_match_all('/[\x{4e00}-\x{9fff}]+/u', strip_tags($body), $matches);
-    $str        = implode('', $matches[0]);
+    $str = implode('', $matches[0]);
     $body_count = strlen(strip_tags($body)) - strlen($str) / 3 * 2;
     return $body_count;
 }
@@ -250,7 +250,7 @@ function parse_video($body)
             $video = Video::find($video_id);
             if ($video) {
                 $video_html = '<div class="row"><div class="col-md-6"><div class="embed-responsive embed-responsive-4by3"><video class="embed-responsive-item" controls poster="' . $video->coverUrl . '"><source src="' . $video->url . '" type="video/mp4"></video></div></div></div>';
-                $body       = str_replace($img_html, $video_html, $body);
+                $body = str_replace($img_html, $video_html, $body);
             }
         }
     }
@@ -313,4 +313,9 @@ function get_full_url($path)
         return $path;
     }
     return env('APP_URL') . $path;
+}
+
+function isPhone()
+{
+    return true;
 }

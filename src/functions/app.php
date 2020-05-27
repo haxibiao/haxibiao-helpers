@@ -54,11 +54,14 @@ function small_logo()
 //兼容网页
 function qrcode_url()
 {
+    if (!class_exists("App\Aso")) {
+        return null;
+    }
 
     if (project_is_dtzq()) {
         $apkUrl = "http://datizhuanqian.com/download"; //TODO: env?
     } else {
-        $apkUrl = "\App\Aso"::getValue('下载页', '安卓地址');
+        $apkUrl = \App\Aso::getValue('下载页', '安卓地址');
     }
     $logo   = small_logo();
     $qrcode = QrCode::format('png')->size(250)->encoding('UTF-8');

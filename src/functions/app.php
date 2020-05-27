@@ -33,9 +33,15 @@ function get_domain()
 
 function small_logo()
 {
+    if (!class_exists("App\Aso")) {
+        return null;
+    }
+
     if (project_is_dtzq()) {
         return '/picture/logo.png';
     }
+
+    //FIXME: helper:install 应该创建一些APP需要的基础表，并seed
 
     $logo = \App\Aso::getValue('下载页', 'logo');
     if (empty($logo)) {
@@ -48,12 +54,13 @@ function small_logo()
 //兼容网页
 function qrcode_url()
 {
+
     if (project_is_dtzq()) {
         $apkUrl = "http://datizhuanqian.com/download"; //TODO: env?
     } else {
-        $apkUrl = \App\Aso::getValue('下载页', '安卓地址');
+        $apkUrl = "\App\Aso"::getValue('下载页', '安卓地址');
     }
-    $logo = small_logo();
+    $logo   = small_logo();
     $qrcode = QrCode::format('png')->size(250)->encoding('UTF-8');
     if (str_contains($logo, env('COS_DOMAIN'))) {
         $qrcode->merge($logo, .1, true);
@@ -69,9 +76,13 @@ function qrcode_url()
 //检查是否备案期间
 function isRecording()
 {
+    if (!class_exists("App\AppConfig")) {
+        return null;
+    }
+
     $config = \App\AppConfig::where([
         'group' => 'record',
-        'name' => 'web',
+        'name'  => 'web',
     ])->first();
     if ($config && $config->state === \App\AppConfig::STATUS_ON) {
         return true;
@@ -173,7 +184,7 @@ function appCanReview()
 function hasBadWords($text)
 {
     try {
-        $badWords = file_get_contents(base_path('filter-question-keywords.json'));
+        $badWords      = file_get_contents(base_path('filter-question-keywords.json'));
         $badWordsArray = json_decode($badWords, true);
     } catch (\Exception $ex) {
         return false;
@@ -203,8 +214,8 @@ function isAndroidApp()
 
 function getOsSystemVersion()
 {
-    $os = getAppOS();
-    $os_version = request()->header('systemVersion') ?? "未知版本";
+    $os             = getAppOS();
+    $os_version     = request()->header('systemVersion') ?? "未知版本";
     $os_and_version = $os . " " . $os_version;
     return $os_and_version;
 }
@@ -316,7 +327,7 @@ function indexArticles()
         ->whereNull('source_url')
         ->whereNotNull('category_id')
         ->orderBy('updated_at', 'desc');
-    $total = count($qb->get());
+    $total    = count($qb->get());
     $articles = $qb->offset((request('page', 1) * 10) - 10)
         ->take(10)
         ->get();
@@ -367,10 +378,15 @@ function filterText($str)
 
 function adIsOpened()
 {
-    $os = request()->header('os', 'android');
+
+    if (!class_exists("App\AppConfig")) {
+        return null;
+    }
+
+    $os     = request()->header('os', 'android');
     $config = \App\AppConfig::where([
         'group' => $os,
-        'name' => 'ad',
+        'name'  => 'ad',
     ])->first();
     if ($config && $config->state === \App\AppConfig::STATUS_OFF) {
         return false;
@@ -415,7 +431,7 @@ function formatSizeUnits($bytes)
  */
 function getRand($plucked)
 {
-    $luckId = null;
+    $luckId  = null;
     $sumRate = array_sum($plucked);
     foreach ($plucked as $key => $value) {
         $randNum = mt_rand(1, $sumRate);
@@ -431,28 +447,43 @@ function getRand($plucked)
 
 function seo_value($group, $name)
 {
+
+    if (!class_exists("App\Seo")) {
+        return null;
+    }
+
     return \App\Seo::getValue($group, $name);
 }
 
 function aso_value($group, $name)
 {
+
+    if (!class_exists("App\Aso")) {
+        return null;
+    }
+
     return \App\Aso::getValue($group, $name);
 }
 
 function getVodConfig(string $key)
 {
     $appName = env('APP_NAME');
-    $name = sprintf('tencentvod.%s.%s', $appName, $key);
+    $name    = sprintf('tencentvod.%s.%s', $appName, $key);
     return config($name);
 }
 
 function stopfunction($name)
 {
-    \App\FunctionSwitch::close_function($name);
+    // \App\FunctionSwitch::close_function($name);
 }
 
 function getDownloadUrl()
 {
+
+    if (!class_exists("App\Aso")) {
+        return null;
+    }
+
     $apkUrl = \App\Aso::getValue('下载页', '安卓地址');
     if (is_null($apkUrl) || empty($apkUrl)) {
         return null;
@@ -472,6 +503,11 @@ function is_dev_env()
 
 function douyinOpen()
 {
+
+    if (!class_exists("App\Config")) {
+        return null;
+    }
+
     $config = \App\Config::where([
         'name' => 'douyin',
     ])->first();

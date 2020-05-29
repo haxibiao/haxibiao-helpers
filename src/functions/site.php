@@ -66,17 +66,3 @@ function base_uri()
     $baseUri = $http . Request::server('HTTP_HOST');
     return $baseUri;
 }
-
-//提取正文中的图片路径
-function extractImagePaths($body)
-{
-    $imgs        = [];
-    $pattern_img = '/src=\"(.*?)\"/';
-    if (preg_match_all($pattern_img, $body, $matches)) {
-        $img_urls = $matches[1];
-        foreach ($img_urls as $img_url) {
-            $imgs[] = parse_url($img_url)['path'];
-        }
-    }
-    return $imgs;
-}

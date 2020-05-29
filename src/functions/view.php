@@ -1,6 +1,5 @@
 <?php
 
-use App\Image;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -165,7 +164,7 @@ function count_words($body)
 {
     $body_text = strip_tags($body);
     preg_match_all('/[\x{4e00}-\x{9fff}]+/u', strip_tags($body), $matches);
-    $str = implode('', $matches[0]);
+    $str        = implode('', $matches[0]);
     $body_count = strlen(strip_tags($body)) - strlen($str) / 3 * 2;
     return $body_count;
 }
@@ -217,54 +216,6 @@ function get_article_url($article)
         $url = $article->target_url;
     }
     return $url;
-}
-
-function parse_image($body, $environment = null)
-{
-    //检测本地或GQL没图的时候取线上的
-    $environment = $environment ?: \App::environment('local');
-
-    if ($environment) {
-        $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
-        preg_match_all($pattern_img, $body, $matches);
-        $imgs = $matches[2];
-        foreach ($imgs as $img) {
-            $image = Image::where('path', $img)->first();
-            if ($image) {
-                $body = str_replace($img, $image->url, $body);
-            }
-        }
-    }
-    return $body;
-}
-
-function parse_video($body)
-{
-    //TODO:: [视频的尺寸还是不完美，后面要获取到视频的尺寸才好处理, 先默认用半个页面来站住]
-    $pattern_img_video = '/<img src=\"\/storage\/video\/thumbnail_(\d+)\.jpg\"([^>]*?)>/iu';
-    if (preg_match_all($pattern_img_video, $body, $matches)) {
-        foreach ($matches[1] as $i => $match) {
-            $img_html = $matches[0][$i];
-            $video_id = $match;
-
-            $video = Video::find($video_id);
-            if ($video) {
-                $video_html = '<div class="row"><div class="col-md-6"><div class="embed-responsive embed-responsive-4by3"><video class="embed-responsive-item" controls poster="' . $video->coverUrl . '"><source src="' . $video->url . '" type="video/mp4"></video></div></div></div>';
-                $body = str_replace($img_html, $video_html, $body);
-            }
-        }
-    }
-    return $body;
-}
-
-function get_qq_pic($qq)
-{
-    return 'https://q.qlogo.cn/headimg_dl?bs=qq&dst_uin=' . $qq . '&src_uin=qq.com&fid=blog&spec=100';
-}
-
-function get_qzone_pic($qq)
-{
-    return 'https://qlogo2.store.qq.com/qzonelogo/' . $qq . '/1/' . time();
 }
 
 function match($str)

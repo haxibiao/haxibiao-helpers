@@ -1,5 +1,5 @@
 {
-  "name": "haxibiao/helper",
+  "name": "haxibiao/helpers",
   "description": "哈希表通用帮助函数和类",
   "type": "project",
   "license": "MIT",
@@ -23,7 +23,7 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-0": {
-      "haxibiao\\helper\\": "src/"
+      "haxibiao\\helpers\\": "src/"
     }
   },
   "autoload-dev": {
@@ -34,7 +34,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "haxibiao\\helper\\HXBHelperProvider"
+        "haxibiao\\helpers\\HXBHelpersProvider"
       ]
     }
   }

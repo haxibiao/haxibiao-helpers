@@ -1,6 +1,6 @@
 <?php
 
-namespace haxibiao\helper;
+namespace haxibiao\helpers;
 
 use App\Exceptions\UserException;
 use App\Mail\SendNotificationMail;

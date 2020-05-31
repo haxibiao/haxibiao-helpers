@@ -1,10 +1,10 @@
 <?php
 
-namespace haxibiao\helper;
+namespace haxibiao\helpers;
 
 use Illuminate\Support\ServiceProvider;
 
-class HXBHelperProvider extends ServiceProvider
+class HXBHelpersProvider extends ServiceProvider
 {
     /**
      * Register services.

@@ -1,6 +1,6 @@
 <?php
 
-namespace haxibiao\helper;
+namespace haxibiao\helpers;
 
 use anerg\OAuth2\OAuth as SnsOAuth;
 use Exception;
@@ -41,27 +41,27 @@ class PayUtils
             $amount *= 100;
             $order = [
                 'partner_trade_no' => $outBizNo,
-                'openid' => $payId,
-                'check_name' => 'NO_CHECK',
-                're_user_name' => $realName,
-                'amount' => $amount,
-                'desc' => $remark,
-                'type' => 'app',
+                'openid'           => $payId,
+                'check_name'       => 'NO_CHECK',
+                're_user_name'     => $realName,
+                'amount'           => $amount,
+                'desc'             => $remark,
+                'type'             => 'app',
                 'spbill_create_ip' => self::WITHDRAW_SERVER_IP,
             ];
         } else if ($this->platform == 'alipay') {
             $order = [
-                'out_biz_no' => $outBizNo,
-                'biz_scene' => 'DIRECT_TRANSFER',
+                'out_biz_no'   => $outBizNo,
+                'biz_scene'    => 'DIRECT_TRANSFER',
                 'trans_amount' => $amount,
                 'product_code' => 'TRANS_ACCOUNT_NO_PWD',
-                'payee_info' => [
-                    'identity' => $payId,
+                'payee_info'   => [
+                    'identity'      => $payId,
                     'identity_type' => OAuthUtils::isAlipayOpenId($payId) ? 'ALIPAY_USER_ID' : 'ALIPAY_LOGON_ID',
-                    'name' => $realName,
+                    'name'          => $realName,
                 ],
-                'remark' => $remark,
-                'order_title' => $remark,
+                'remark'       => $remark,
+                'order_title'  => $remark,
             ];
         }
 
@@ -70,13 +70,13 @@ class PayUtils
 
     public static function userInfo($code)
     {
-        $userInfo = [];
+        $userInfo          = [];
         $_GET['auth_code'] = $code;
-        $config = [
-            'app_id' => config('pay.alipay.app_id'),
-            'scope' => 'auth_user',
+        $config            = [
+            'app_id'      => config('pay.alipay.app_id'),
+            'scope'       => 'auth_user',
             'pem_private' => base_path('cert/alipay/pem/private.pem'),
-            'pem_public' => base_path('cert/alipay/pem/public.pem'),
+            'pem_public'  => base_path('cert/alipay/pem/public.pem'),
         ];
         try {
             $snsOAuth = SnsOAuth::alipay($config);

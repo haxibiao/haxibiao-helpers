@@ -1,6 +1,6 @@
 <?php
 
-namespace haxibiao\helper;
+namespace haxibiao\helpers;
 
 use Illuminate\Support\Facades\Storage;
 

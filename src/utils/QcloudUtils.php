@@ -1,6 +1,6 @@
 <?php
 
-namespace haxibiao\helper;
+namespace haxibiao\helpers;
 
 use QcloudApi;
 
@@ -16,8 +16,8 @@ class QcloudUtils
     private static function initVod()
     {
         $config = [
-            'SecretId'      => config('tencentvod.'.config('app.name').'.secret_id'),
-            'SecretKey'     => config('tencentvod.'.config('app.name').'.secret_key'),
+            'SecretId'      => config('tencentvod.' . config('app.name') . '.secret_id'),
+            'SecretKey'     => config('tencentvod.' . config('app.name') . '.secret_key'),
             'RequestMethod' => 'POST',
         ];
         return QcloudApi::load(QcloudApi::MODULE_VOD, $config);

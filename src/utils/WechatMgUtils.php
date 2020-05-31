@@ -1,5 +1,5 @@
 <?php
-namespace haxibiao\helper;
+namespace haxibiao\helpers;
 
 use GuzzleHttp\Client;
 use haxibiao\helper\WXBizDataCrypt;

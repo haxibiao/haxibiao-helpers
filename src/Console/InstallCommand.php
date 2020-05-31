@@ -1,7 +1,6 @@
 <?php
 
-namespace haxibiao\helper;
-
+namespace haxibiao\helpers;
 
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;
@@ -15,14 +14,14 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'helper:install';
+    protected $signature = 'helpers:install';
 
     /**
      * The Console command description.
      *
      * @var string
      */
-    protected $description = '注册 haxibiao/helper Provider';
+    protected $description = '注册 haxibiao/helpers Provider';
 
     /**
      * Execute the Console command.
@@ -45,8 +44,8 @@ class InstallCommand extends Command
         $namespace = Str::replaceLast('\\', '', $this->getAppNamespace());
 
         file_put_contents(config_path('app.php'), str_replace(
-            "{$namespace}\\Providers\EventServiceProvider::class,".PHP_EOL,
-            "{$namespace}\\Providers\EventServiceProvider::class,".PHP_EOL."        haxibiao\helper\HXBHelperProvider::class,".PHP_EOL,
+            "{$namespace}\\Providers\EventServiceProvider::class," . PHP_EOL,
+            "{$namespace}\\Providers\EventServiceProvider::class," . PHP_EOL . "        haxibiao\helper\HXBHelpersProvider::class," . PHP_EOL,
             file_get_contents(config_path('app.php'))
         ));
     }

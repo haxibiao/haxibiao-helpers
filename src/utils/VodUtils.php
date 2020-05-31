@@ -1,6 +1,6 @@
 <?php
 
-namespace haxibiao\helper;
+namespace haxibiao\helpers;
 
 use QcloudApi;
 
@@ -33,8 +33,8 @@ class VodUtils
             if ($response == false) {
                 $error = $vod->getError();
                 echo "$apiAction failed, code: " . $error->getCode() .
-                    ", message: " . $error->getMessage() .
-                    "ext: " . var_export($error->getExt(), true) . "\n";
+                ", message: " . $error->getMessage() .
+                "ext: " . var_export($error->getExt(), true) . "\n";
                 continue;
             } else {
                 return $response;

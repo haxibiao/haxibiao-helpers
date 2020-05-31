@@ -1,6 +1,6 @@
 <?php
 
-namespace haxibiao\helper;
+namespace haxibiao\helpers;
 
 use anerg\OAuth2\OAuth as SnsOAuth;
 use App\Exceptions\UserException;

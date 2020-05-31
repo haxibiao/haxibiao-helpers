@@ -1,5 +1,4 @@
 <?php
-
 use Laravel\Nova\Nova;
 
 /**

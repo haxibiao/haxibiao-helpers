@@ -1,5 +1,7 @@
 <?php
 
+//FIXME: 重构 haxibiao-config
+
 use App\Article;
 use App\Category;
 use App\Image;

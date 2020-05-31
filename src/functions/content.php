@@ -1,8 +1,51 @@
 <?php
 
+use App\Article;
 use App\Category;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
+/**
+ * 首页的文章列表
+ * @return collection([article]) 包含分页信息和移动ＶＵＥ等优化的文章列表
+ */
+function indexArticles()
+{
+    $qb = Article::from('articles')
+        ->with('user')->with('category')
+        ->exclude(['body', 'json'])
+        ->where('status', '>', 0)
+        ->whereNull('source_url')
+        ->whereNotNull('category_id')
+        ->orderBy('updated_at', 'desc');
+    $total    = count($qb->get());
+    $articles = $qb->offset((request('page', 1) * 10) - 10)
+        ->take(10)
+        ->get();
+
+    //过滤置顶的文章
+    $stick_article_ids = array_column(get_stick_articles('发现'), 'id');
+    $filtered_articles = $articles->filter(function ($article, $key) use ($stick_article_ids) {
+        return !in_array($article->id, $stick_article_ids);
+    })->all();
+
+    $articles = [];
+    foreach ($filtered_articles as $article) {
+        $articles[] = $article;
+    }
+
+    //移动端，用简单的分页样式
+    if (isMobile()) {
+        $articles = new Paginator($articles, 10);
+        $articles->hasMorePagesWhen($total > request('page') * 10);
+    } else {
+        $articles = new LengthAwarePaginator($articles, $total, 10);
+    }
+    return $articles;
+}
+
+//FIXME: 重构到 haxibiao-content （article, post, commentable）
+// haxibiao-category (categorized, tagable)
 function get_categories($full = 0, $type = 'article', $for_parent = 0)
 {
     $categories = [];
@@ -27,7 +70,7 @@ function get_categories($full = 0, $type = 'article', $for_parent = 0)
             }
         }
     }
-    $categories = \Illuminate\Support\Collection::make($categories);
+    $categories = collect($categories);
     return $categories;
 }
 
@@ -37,7 +80,7 @@ function get_carousel_items($category_id = 0)
     if (isMobile()) {
         return $carousel_items;
     }
-    $query = App\Article::orderBy('id', 'desc')
+    $query = Article::orderBy('id', 'desc')
         ->where('image_top', '<>', '')
         ->where('is_top', 1);
     if ($category_id) {
@@ -58,11 +101,4 @@ function get_carousel_items($category_id = 0)
         $carousel_index++;
     }
     return $carousel_items;
-}
-
-function base_uri()
-{
-    $http    = Request::secure() ? 'https://' : 'http://';
-    $baseUri = $http . Request::server('HTTP_HOST');
-    return $baseUri;
 }

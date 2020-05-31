@@ -1,14 +1,31 @@
 <?php
 
-use haxibiao\helper\QcloudUtils;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * 使用场景:无特定使用场景,通用!
  * 全局公共辅助函数
  */
+
+/**
+ * @deprecated 只有答赚网页用...
+ */
+function get_apk_link($version = "")
+{
+    $app = 'datizhuanqian';
+    if (str_contains(env('APP_DOMAIN'), 'damei')) {
+        $app = 'damei';
+    }
+    $env = env('APP_ENV');
+    if ($env == 'prod') {
+        $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-release$version.apk";
+    } else {
+        $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-$env" . $version . ".apk";
+    }
+
+    return $link;
+}
+
 function get_domain_key()
 {
     return str_replace('.', '_', get_domain());
@@ -40,8 +57,22 @@ function is_testing_env()
 
 function is_prod_env()
 {
-    $environment = ['prod', 'production','hotfix'];
+    $environment = ['prod', 'production', 'hotfix'];
     return in_array(config('app.env'), $environment);
+}
+
+function is_local_env()
+{
+    return config('app.env') == 'local';
+}
+
+function is_dev_env()
+{
+    return config('app.env') == 'dev';
+}
+function is_prod()
+{
+    return env('APP_ENV') == 'prod';
 }
 
 function is_night()
@@ -53,22 +84,6 @@ function is_night()
 function is_moring($minute = 2)
 {
     return date('H') == 0 && date('i') <= $minute;
-}
-
-function get_apk_link($version = "")
-{
-    $app = 'datizhuanqian';
-    if (str_contains(env('APP_DOMAIN'), 'damei')) {
-        $app = 'damei';
-    }
-    $env = env('APP_ENV');
-    if ($env == 'prod') {
-        $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-release$version.apk";
-    } else {
-        $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-$env" . $version . ".apk";
-    }
-
-    return $link;
 }
 
 function get_apk_name()
@@ -274,27 +289,6 @@ function sort_string($string)
     return implode('', $stringParts);
 }
 
-function get_os_version()
-{
-    return request()->header('systemVersion') ?? request()->get('systemVersion');
-}
-
-function get_ip()
-{
-    $ip = !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-    if (isset($_SERVER['HTTP_CLIENT_IP']) && preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}$/', $_SERVER['HTTP_CLIENT_IP'])) {
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) and preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
-        foreach ($matches[0] as $xip) {
-            if (!preg_match('#^(10|172\.16|192\.168)\.#', $xip)) {
-                $ip = $xip;
-                break;
-            }
-        }
-    }
-    return $ip;
-}
-
 function ssl_url($url)
 {
     if (starts_with($url, 'https')) {
@@ -315,44 +309,28 @@ function trim_https($url)
     return $url;
 }
 
-function get_site_domain()
+/**
+ *
+ * 随机算法
+ *
+ * 假设我们有这样一个数组[ 'withdraw01'=>5, 'withdraw02'=>5, 'withdraw03'=>10]
+ * withdraw01概率25%，withdraw02奖概率25%，withdraw03奖概率50%
+ *
+ * @param $plucked
+ * @return int|string|null
+ */
+function getRand($plucked)
 {
-    return env('APP_DOMAIN', get_domain());
-}
-
-function fix_article_body_images($body)
-{
-    $preg = '/<img.*?src="(.*?)".*?>/is';
-
-    preg_match_all($preg, $body, $match);
-
-    if (!empty($match[1]) && !str_contains($body, 'haxibiao')) {
-        foreach ($match[1] as $image_url) {
-            $body = str_replace("$image_url", "https://haxibiao.com$image_url", $body);
+    $luckId  = null;
+    $sumRate = array_sum($plucked);
+    foreach ($plucked as $key => $value) {
+        $randNum = mt_rand(1, $sumRate);
+        if ($randNum <= $value) {
+            $luckId = $key;
+            break;
+        } else {
+            $sumRate -= $value;
         }
     }
-
-    return $body;
-}
-
-function processVideo($video)
-{
-    $video->syncVodProcessResult();
-    //如果还没有截图 就重新执行调用截图接口
-    if (!$video->cover && !empty($video->qcvod_fileid)) {
-        $duration = $video->duration > 9 ? 9 : $video->duration;
-        QcloudUtils::makeCoverAndSnapshots($video->qcvod_fileid, $duration);
-    }
-}
-
-function dropIndexIfExist($tableName, $indexName)
-{
-    Schema::table($tableName, function (Blueprint $table) use ($tableName, $indexName) {
-        $sm            = Schema::getConnection()->getDoctrineSchemaManager();
-        $doctrineTable = $sm->listTableDetails($tableName);
-
-        if ($doctrineTable->hasIndex($indexName)) {
-            $table->dropIndex($indexName);
-        }
-    });
+    return $luckId;
 }

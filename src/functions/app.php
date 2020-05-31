@@ -155,7 +155,11 @@ function getUser($throw = true)
 //获取当前用户ID
 function getUserId()
 {
-    return getUser()->id;
+    //兼容哈希表ImageRepo允许外部上传图片，不丢异常
+    if ($user = getUser(false)) {
+        return $user->id;
+    }
+    return 0;
 }
 
 //获取访客IP

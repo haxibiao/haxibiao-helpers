@@ -5,11 +5,14 @@ use GuzzleHttp\Client;
 use haxibiao\helper\WXBizDataCrypt;
 use Illuminate\Support\Arr;
 
-//微信小程序用
+/**
+ * 微信小程序用的工具类
+ */
 class WechatMgUtils
 {
-    protected $client = null;
-    protected $config = [];
+    protected static $instance = null;
+    protected $client          = null;
+    protected $config          = [];
 
     public function __construct()
     {
@@ -17,6 +20,15 @@ class WechatMgUtils
         $this->client = new Client([
             'time_out' => $this->config['time_out'],
         ]);
+    }
+
+    //单例
+    public static function getInstance()
+    {
+        if (is_null(WechatMgUtils::$instance)) {
+            WechatMgUtils::$instance = new WechatMgUtils();
+        }
+        return WechatMgUtils::$instance;
     }
 
     public function checkSignature($signature, $timestamp, $nonce)

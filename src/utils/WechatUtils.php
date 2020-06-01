@@ -108,11 +108,12 @@ class WechatUtils
     }
 
     //单例
-    public function getInstance()
+    public static function getInstance()
     {
         if (is_null(WechatUtils::$instance)) {
             WechatUtils::$instance = new WechatUtils();
         }
+        return WechatUtils::$instance;
     }
 
     /**

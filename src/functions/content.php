@@ -12,27 +12,18 @@ use Illuminate\Pagination\Paginator;
 function indexArticles()
 {
     $qb = Article::from('articles')
-        ->with('user')->with('category')
+        ->has('user')
+        ->has('category')
         ->exclude(['body', 'json'])
         ->where('status', '>', 0)
         ->whereNull('source_url')
         ->whereNotNull('category_id')
-        ->orderBy('updated_at', 'desc');
-    $total    = count($qb->get());
+        ->latest('updated_at');
+
+    $total    = $qb->count();
     $articles = $qb->offset((request('page', 1) * 10) - 10)
-        ->take(10)
+        ->take(7)
         ->get();
-
-    //过滤置顶的文章
-    $stick_article_ids = array_column(get_stick_articles('发现'), 'id');
-    $filtered_articles = $articles->filter(function ($article, $key) use ($stick_article_ids) {
-        return !in_array($article->id, $stick_article_ids);
-    })->all();
-
-    $articles = [];
-    foreach ($filtered_articles as $article) {
-        $articles[] = $article;
-    }
 
     //移动端，用简单的分页样式
     if (isMobile()) {

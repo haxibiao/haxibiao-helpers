@@ -16,7 +16,7 @@ use Overtrue\EasySms\EasySms;
 class SMSUtils
 {
     protected static $instance = null;
-    protected $verificationCode;
+    protected static $verificationCode;
 
     //单例
     public static function getInstance()

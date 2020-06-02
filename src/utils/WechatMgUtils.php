@@ -2,7 +2,7 @@
 namespace haxibiao\helpers;
 
 use GuzzleHttp\Client;
-use haxibiao\helper\WXBizDataCrypt;
+use haxibiao\helpers\WXBizDataCrypt;
 use Illuminate\Support\Arr;
 
 /**

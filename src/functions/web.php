@@ -1,6 +1,6 @@
 <?php
 
-use haxibiao\helper\QcloudUtils;
+use haxibiao\helpers\QcloudUtils;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
@@ -363,7 +363,8 @@ function getAppId()
 
 function is_giql()
 {
-    return str_contains(request()->header("referer"), '/graphiql?');
+    $referrer = request()->header("referer") ?? '';
+    return str_contains($referrer, '/graphiql?');
 }
 
 /**
@@ -374,8 +375,7 @@ function is_giql()
  */
 function get_referer()
 {
-    $referrer = request()->header('referrer') ?? request()->get('referrer');
-
+    $referrer = request()->header('referrer') ?? request()->get('referrer', 'unknown');
     //官方正式版也标注渠道为 APK
     if ($referrer == 'null' || $referrer == 'undefined') {
         $referrer = 'unknown';

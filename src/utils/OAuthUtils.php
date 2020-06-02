@@ -8,8 +8,8 @@ use App\OAuth;
 use App\User;
 use App\Wallet;
 use App\Withdraw;
-use haxibiao\helper\TikTokUtils;
-use haxibiao\helper\WechatUtils;
+use haxibiao\helpers\TikTokUtils;
+use haxibiao\helpers\WechatUtils;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 

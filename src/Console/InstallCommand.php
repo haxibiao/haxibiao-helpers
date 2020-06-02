@@ -21,7 +21,7 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $description = '注册 haxibiao/helpers Provider';
+    protected $description = '安装 haxibiao/helpers';
 
     /**
      * Execute the Console command.
@@ -45,7 +45,7 @@ class InstallCommand extends Command
 
         file_put_contents(config_path('app.php'), str_replace(
             "{$namespace}\\Providers\EventServiceProvider::class," . PHP_EOL,
-            "{$namespace}\\Providers\EventServiceProvider::class," . PHP_EOL . "        haxibiao\helper\HXBHelpersProvider::class," . PHP_EOL,
+            "{$namespace}\\Providers\EventServiceProvider::class," . PHP_EOL . "        haxibiao\helpers\HXBHelpersProvider::class," . PHP_EOL,
             file_get_contents(config_path('app.php'))
         ));
     }

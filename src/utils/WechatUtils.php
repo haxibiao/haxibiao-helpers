@@ -177,7 +177,7 @@ class WechatUtils
      */
     public static function auth($code)
     {
-        $accessTokens = WechatUtils::$instance->accessToken($code);
+        $accessTokens = WechatUtils::getInstance()->accessToken($code);
 
         if (!is_array($accessTokens) || !array_key_exists('unionid', $accessTokens) || !array_key_exists('openid', $accessTokens)) {
             return failed_response(500, '授权失败,参数错误');

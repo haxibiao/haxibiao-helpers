@@ -54,7 +54,7 @@ class SMSUtils
             'channel' => $channel,
             'code'    => $code,
             'action'  => $action,
-            'actu'    => ""
+            'actu'    => "default"
         ]);
 
         //拼装数据

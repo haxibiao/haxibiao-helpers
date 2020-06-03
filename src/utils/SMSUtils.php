@@ -54,6 +54,7 @@ class SMSUtils
             'channel' => $channel,
             'code'    => $code,
             'action'  => $action,
+            'actu'    => ""
         ]);
 
         //拼装数据
@@ -164,6 +165,5 @@ class SMSUtils
         $templates = self::templates();
 
         return $templates[$action][$gateways];
-
     }
 }

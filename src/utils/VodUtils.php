@@ -8,7 +8,7 @@ use QcloudApi;
  * 腾讯VOD视频上传助手类
  *
  * Class VodUtils
- * @package haxibiao\helper
+ * @package haxibiao\helpers
  */
 class VodUtils
 {

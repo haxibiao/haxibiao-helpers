@@ -4,7 +4,7 @@ namespace haxibiao\helpers;
 
 use Illuminate\Support\ServiceProvider;
 
-class HXBHelpersProvider extends ServiceProvider
+class HelpersServiceProvider extends ServiceProvider
 {
     /**
      * Register services.

@@ -4,7 +4,7 @@
 function getVodConfig(string $key)
 {
     $appName = env('APP_NAME');
-    $name    = sprintf('tencentvod.%s.%s', $appName, $key);
+    $name    = sprintf('vod.%s.%s', $appName, $key);
     return config($name);
 }
 

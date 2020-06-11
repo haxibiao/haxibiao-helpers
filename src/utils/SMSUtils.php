@@ -57,7 +57,7 @@ class SMSUtils
         ]);
 
         //FIXME:貌似没有地方用到这个actu
-        if (in_array(env("APP_NAME"), ["datizhuanqian", "damei"])) {
+        if (!in_array(env("APP_NAME"), ["datizhuanqian", "damei"])) {
             self::$verificationCode->update(["actu" => "default"]);
         }
         //拼装数据

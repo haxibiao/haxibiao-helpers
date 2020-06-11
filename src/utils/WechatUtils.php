@@ -247,7 +247,7 @@ class WechatUtils
 
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         //获取微信token
-        $accessTokens = WechatUtils::$instance->accessToken($code);
+        $accessTokens = WechatUtils::getInstance()->accessToken($code);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
         //建立oauth关联
         $oAuth = OAuth::firstOrNew([

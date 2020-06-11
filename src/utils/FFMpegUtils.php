@@ -11,12 +11,10 @@ class FFMpegUtils
 
     private function __construct()
     {
-
     }
 
     private function __clone()
     {
-
     }
 
     /**
@@ -45,6 +43,11 @@ class FFMpegUtils
 
             $video = $ffmpeg->open($streamPath);
             $frame = $video->frame(\FFMpeg\Coordinate\TimeCode::fromSeconds($fromSecond)); //提取第几秒的图像
+            //FIXME::答赚和答妹没有用makeVideoCover，这个方法也不会用到，目前只有工厂项目用了这个方法。
+            if (!in_array(env("APP_NAME"), ["datizhuanqian", "damei"])) {
+                $frame->save($name);
+                return $name;
+            }
             $frame->save('/tmp/' . $name . '.jpg');
 
             //上传到Cos
@@ -57,6 +60,7 @@ class FFMpegUtils
             return $cosDisk->url($cosPath);
         } catch (\Exception $ex) {
             //截图失败，返回null
+
             return null;
         }
     }

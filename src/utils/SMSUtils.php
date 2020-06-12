@@ -131,31 +131,48 @@ class SMSUtils
     public static function templates()
     {
         return [
-            'RESET_PASSWORD'   => [
+            'RESET_PASSWORD'         => [
                 'aliyun' => 'SMS_157655209',
                 'qcloud' => '362867',
             ],
-            'USER_REGISTER'    => [
+            'USER_REGISTER'          => [
                 'aliyun' => 'SMS_157655210',
                 'qcloud' => '358497',
             ],
-            'USER_INFO_CHANGE' => [
+            'USER_INFO_CHANGE'       => [
                 'aliyun' => 'SMS_157655208',
                 'qcloud' => '358492',
             ],
-            'USER_LOGIN'       => [
+            'USER_LOGIN'             => [
                 'aliyun' => 'SMS_157655212',
                 'qcloud' => '358496',
             ],
-            'WECHAT_BIND'      => [
+            'WECHAT_BIND'            => [
                 'aliyun' => null,
                 'qcloud' => '358496',
             ],
-            'EXCHANGE_REMIND'  => [
+            'EXCHANGE_REMIND'        => [
                 'aliyun' => null,
                 'qcloud' => '501361',
             ],
+            'NOVA_NEW_USER_WITHDRAW' => [
+                'aliyun' => null,
+                'qcloud' => '606303',
+            ],
         ];
+    }
+
+    /**
+     * 发送统计短信给内部人员
+     */
+    public static function sendNovaMessage($mobile, $action, array $data)
+    {
+        $easySms = new EasySms(config('sms'));
+        $easySms->send($mobile, [
+            'template' => self::getTemplate($action),
+            'data'     => $data,
+        ]);
+        return true;
     }
 
     public static function getTemplate($action)

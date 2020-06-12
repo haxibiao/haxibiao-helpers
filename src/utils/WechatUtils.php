@@ -1,4 +1,5 @@
 <?php
+
 namespace haxibiao\helpers;
 
 use App\Exceptions\UserException;
@@ -88,7 +89,6 @@ class WXBizDataCrypt
         $data = $result;
         return ErrorCode::$OK;
     }
-
 }
 
 //微信工具类
@@ -103,7 +103,7 @@ class WechatUtils
     {
         $this->config = config('wechat');
         $this->client = new Client([
-            'time_out' => $this->config['time_out'],
+            'time_out' => 5,
         ]);
     }
 

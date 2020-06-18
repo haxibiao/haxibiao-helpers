@@ -26,12 +26,11 @@ class OAuthUtils
         if ($type == 'wechat') {
             return WeChatUtils::signInOAuth($code);
         }
-
     }
 
     public static function bind($user, $code, $type)
     {
-        $brand = OAuth::typeTranslator($type);
+        // $brand = OAuth::typeTranslator($type);
         throw_if(self::getUserOauth($user, $type), UserException::class, '您已绑定成功,请直接登录!');
         throw_if(!method_exists(self::class, $type), UserException::class, '绑定失败,该授权方式不存在!');
 

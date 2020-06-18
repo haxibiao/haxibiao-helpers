@@ -62,6 +62,7 @@ class OAuthUtils
     {
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         $userInfo = self::userInfo($code);
+        dd($userInfo);
         $openId   = Arr::get($userInfo, 'user_id');
         throw_if(empty($openId), UserException::class, '授权失败,请稍后再试!');
 
@@ -92,8 +93,8 @@ class OAuthUtils
         $config            = [
             'app_id'      => '2019112969489742',
             'scope'       => 'auth_user',
-            'pem_private' => base_path('cert/alipay/pem/private.pem'),
-            'pem_public'  => base_path('cert/alipay/pem/public.pem'),
+            'pem_private' => base_path('cert/alipay/pem/private_key.pem'),
+            'pem_public'  => base_path('cert/alipay/pem/public_key.pem'),
         ];
         try {
             $snsOAuth = SnsOAuth::alipay($config);

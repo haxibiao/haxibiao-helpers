@@ -62,7 +62,6 @@ class OAuthUtils
     {
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         $userInfo = self::userInfo($code);
-        dd($userInfo);
         $openId   = Arr::get($userInfo, 'user_id');
         throw_if(empty($openId), UserException::class, '授权失败,请稍后再试!');
 

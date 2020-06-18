@@ -34,6 +34,7 @@ class OAuthUtils
         throw_if(self::getUserOauth($user, $type), UserException::class, '您已绑定成功,请直接登录!');
         throw_if(!method_exists(self::class, $type), UserException::class, '绑定失败,该授权方式不存在!');
 
+        info("进来了2");
         $oauth = self::$type($user, $code);
         return $oauth;
     }
@@ -60,15 +61,18 @@ class OAuthUtils
 
     public static function bindAlipay($user, $code)
     {
+        info("进来了3");
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         $userInfo = self::userInfo($code);
         $openId   = Arr::get($userInfo, 'user_id');
+        info(json_encode($userInfo));
         throw_if(empty($openId), UserException::class, '授权失败,请稍后再试!');
 
         $oauth = OAuth::firstOrNew(['oauth_type' => 'alipay', 'oauth_id' => $openId]);
 
         throw_if(isset($oauth->id), UserException::class, '该支付宝已被绑定,请尝试其他账户!');
 
+        info('进来了4');
         //更新OAuth绑定
         $oauth->user_id = $user->id;
         $oauth->data    = $userInfo;

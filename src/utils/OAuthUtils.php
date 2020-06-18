@@ -97,7 +97,7 @@ class OAuthUtils
         ];
         try {
             $snsOAuth = SnsOAuth::alipay($config);
-            dd($snsOAuth);
+
             $userInfo = $snsOAuth->userinfoRaw();
         } catch (\Exception $ex) {
             $userInfo['errorMsg'] = $ex->getMessage();

@@ -15,8 +15,8 @@ class VodUtils
     private static function initVod()
     {
         $config = [
-            'SecretId'      => env('COS_SECRET_ID'),
-            'SecretKey'     => env('COS_SECRET_KEY'),
+            'SecretId'      => env('VOD_SECRET_ID'),
+            'SecretKey'     => env('VOD_SECRET_KEY'),
             'RequestMethod' => 'POST',
         ];
         return QcloudApi::load(QcloudApi::MODULE_VOD, $config);
@@ -33,8 +33,8 @@ class VodUtils
             if ($response == false) {
                 $error = $vod->getError();
                 echo "$apiAction failed, code: " . $error->getCode() .
-                ", message: " . $error->getMessage() .
-                "ext: " . var_export($error->getExt(), true) . "\n";
+                    ", message: " . $error->getMessage() .
+                    "ext: " . var_export($error->getExt(), true) . "\n";
                 continue;
             } else {
                 return $response;
@@ -215,16 +215,18 @@ class VodUtils
         for ($seconds = 1; $seconds <= $maxDuration; $seconds++) {
             $timeOffsets['snapshotByTimeOffset.timeOffset.' . $seconds] = $seconds * 1000;
         }
-        $params = array_merge([
-            'fileId'                          => $fileId,
-            'snapshotByTimeOffset.definition' => 10, //截取9张正常缩放的图片
-        ],
+        $params = array_merge(
+            [
+                'fileId'                          => $fileId,
+                'snapshotByTimeOffset.definition' => 10, //截取9张正常缩放的图片
+            ],
             $timeOffsets,
             [
                 'coverBySnapshot.definition'   => 10, //截取封面
                 'coverBySnapshot.positionType' => 'Time',
                 'coverBySnapshot.position'     => 2, // 第2秒截图做默认封面
-            ]);
+            ]
+        );
         return self::retryVodApi('ProcessFile', $params);
     }
 

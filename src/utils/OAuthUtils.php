@@ -88,13 +88,17 @@ class OAuthUtils
         //同步昵称、头像、性别...
     }
 
+    /**
+     * @param $code alipay sdk授权码
+     */
     public static function userInfo($code)
     {
         $userInfo = [];
 
         $_GET['auth_code'] = $code;
         $config            = [
-            'app_id'      => '2019112969489742',
+            // 默认采用答赚 appid
+            'app_id'      => env('ALIPAY_AUTH_APP_ID', null) ?? '2019112969489742',
             'scope'       => 'auth_user',
             'pem_private' => base_path('cert/alipay/pem/private.pem'),
             'pem_public'  => base_path('cert/alipay/pem/public.pem'),

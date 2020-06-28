@@ -257,6 +257,12 @@ if (!function_exists('mb_str_split')) {
     }
 }
 
+// 获取用户设备品牌
+function get_user_brand()
+{
+    return request()->header('referrer');
+}
+
 function checkStrRepeatRate($str)
 {
     $length = mb_strlen($str, 'utf8');

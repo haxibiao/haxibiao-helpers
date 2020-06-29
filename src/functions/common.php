@@ -57,7 +57,7 @@ function is_testing_env()
 
 function is_prod_env()
 {
-    $environment = ['prod', 'production', 'hotfix'];
+    $environment = ['prod', 'production'];
     return in_array(config('app.env'), $environment);
 }
 

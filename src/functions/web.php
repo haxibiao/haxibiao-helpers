@@ -322,6 +322,11 @@ function getAppStore()
     return request()->header('referrer') ?: 'haxibiao';
 }
 
+function isHuawei()
+{
+    return strtolower(getAppStore()) == "huawei";
+}
+
 function isVivo()
 {
     return strtolower(getAppStore()) == "vivo";
@@ -343,6 +348,11 @@ function getOsSystemVersion()
     $os_version     = request()->header('systemVersion') ?? "未知版本";
     $os_and_version = $os . " " . $os_version;
     return $os_and_version;
+}
+
+function isAndroid10()
+{
+    return isAndroidApp() && str_contains(getOsSystemVersion(), "android 10");
 }
 
 function getAppBuild()

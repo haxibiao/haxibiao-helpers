@@ -14,11 +14,25 @@ class VodUtils
 {
     private static function initVod()
     {
-        $config = [
-            'SecretId'      => config('vod.secret_id'),
-            'SecretKey'     => config('vod.secret_key'),
-            'RequestMethod' => 'POST',
-        ];
+        $config = null;
+
+        //在这里判断是为了兼容其他使用 App 使用了 vod 文件中 SecretId ，我并不确定其他项目的 .env 中是否设置了 SecretId
+        if(config('app.name') == 'ablm') 
+        {
+            $config = [
+                'SecretId'      => config('vod.ablm.secret_id'),
+                'SecretKey'     => config('vod.ablm.secret_key'),
+                'RequestMethod' => 'POST',
+            ];
+        } else {
+            $config = [
+                'SecretId'      => config('vod.secret_id'),
+                'SecretKey'     => config('vod.secret_key'),
+                'RequestMethod' => 'POST',
+            ];
+        }
+
+        
         return QcloudApi::load(QcloudApi::MODULE_VOD, $config);
     }
 

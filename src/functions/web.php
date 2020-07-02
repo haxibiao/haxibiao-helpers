@@ -322,6 +322,11 @@ function getAppStore()
     return request()->header('referrer') ?: 'haxibiao';
 }
 
+function isVivo()
+{
+    return strtolower(getAppStore()) == "vivo";
+}
+
 function getAppOS()
 {
     return request()->header('os') ?: 'android';

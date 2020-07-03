@@ -1,6 +1,6 @@
 <?php
 
-use haxibiao\helpers\QcloudUtils;
+use Haxibiao\Helpers\QcloudUtils;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
@@ -455,7 +455,6 @@ function getIp()
     }
 
     return $ip;
-
 }
 
 //1.5+版本可以看到待审题

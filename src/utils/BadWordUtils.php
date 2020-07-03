@@ -1,6 +1,6 @@
 <?php
 
-namespace haxibiao\helpers;
+namespace Haxibiao\Helpers;
 
 class BadWordUtils
 {
@@ -19,13 +19,11 @@ class BadWordUtils
                 $text = str_replace(["\n", "\r", "\n\r", '"', ';'], '', $text);
                 return $text;
             }, $badWords);
-
         }
     }
 
     public function __clone()
     {
-
     }
 
     public static function file($filePath = null)
@@ -51,7 +49,6 @@ class BadWordUtils
                     return true;
                 }
             }
-
         }
     }
 
@@ -86,5 +83,4 @@ class BadWordUtils
             return self::$badWords;
         }
     }
-
 }

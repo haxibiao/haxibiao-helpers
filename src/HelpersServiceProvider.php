@@ -1,6 +1,6 @@
 <?php
 
-namespace haxibiao\helpers;
+namespace Haxibiao\Helpers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -33,6 +33,5 @@ class HelpersServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
     }
 }

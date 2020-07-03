@@ -1,8 +1,9 @@
 <?php
-namespace haxibiao\helpers;
+
+namespace Haxibiao\Helpers;
 
 use GuzzleHttp\Client;
-use haxibiao\helpers\WXBizDataCrypt;
+use Haxibiao\Helpers\WXBizDataCrypt;
 use Illuminate\Support\Arr;
 
 /**
@@ -79,7 +80,8 @@ class WechatMgUtils
                 "description" => $description,
                 "url"         => $url,
                 "thumb_url"   => $thumb_url,
-            ]], JSON_UNESCAPED_UNICODE);
+            ]
+        ], JSON_UNESCAPED_UNICODE);
         return $this->sendMessage($userName, $body);
     }
 

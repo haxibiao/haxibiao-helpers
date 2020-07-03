@@ -1,5 +1,6 @@
 <?php
-namespace haxibiao\helpers;
+
+namespace Haxibiao\Helpers;
 
 use App\Exceptions\UserException;
 use App\OAuth;

@@ -57,7 +57,7 @@ function is_testing_env()
 
 function is_prod_env()
 {
-    $environment = ['prod', 'production', 'hotfix'];
+    $environment = ['prod', 'production'];
     return in_array(config('app.env'), $environment);
 }
 
@@ -255,6 +255,12 @@ if (!function_exists('mb_str_split')) {
     {
         return preg_split('/(?<!^)(?!$)/u', $str);
     }
+}
+
+// 获取用户设备品牌
+function get_user_brand()
+{
+    return request()->header('referrer');
 }
 
 function checkStrRepeatRate($str)

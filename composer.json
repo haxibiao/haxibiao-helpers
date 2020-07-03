@@ -23,7 +23,7 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-0": {
-      "haxibiao\\helpers\\": "src/"
+      "Haxibiao\\helpers\\": "src/"
     }
   },
   "autoload-dev": {
@@ -34,7 +34,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "haxibiao\\helpers\\HelpersServiceProvider"
+        "Haxibiao\\helpers\\HelpersServiceProvider"
       ]
     }
   }

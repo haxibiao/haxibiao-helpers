@@ -242,13 +242,7 @@ class SMSUtils
         $req->TemplateParamSet = array($code, "3");
 
         // 通过 client 对象调用 SendSms 方法发起请求。注意请求方法名与请求对象是对应的
-        $resp = $client->SendSms($req);
-
-        // 输出 JSON 格式的字符串回包
-        print_r($resp->toJsonString());
-
-        // 可以取出单个值，您可以通过官网接口文档或跳转到 response 对象的定义处查看返回字段的定义
-        print_r($resp->TotalCount);
+        $client->SendSms($req);
 
         return $code;
     }

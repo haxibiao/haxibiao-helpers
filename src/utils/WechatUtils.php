@@ -122,16 +122,25 @@ class WechatUtils
      * @param [String] $code
      * @return Array
      */
-    public function accessToken($code)
+    public function accessToken($code, $platform)
     {
         $accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token';
 
+        //默认使用答赚安卓版Wechat
+        $appid = Arr::get($this->config, 'wechat_app.appid');
+        $secret = Arr::get($this->config, 'wechat_app.secret');
+        //天天出题，使用ios版wechat
+        if ($platform == "TTCT") {
+            $appid = Arr::get($this->config, 'tiantianchuti.appid');
+            $secret = Arr::get($this->config, 'tiantianchuti.secret');
+        }
+        dd($secret);
         $response = $this->client->request('GET', $accessTokenUrl, [
             'query' => [
                 'grant_type' => 'authorization_code',
                 'code'       => $code,
-                'appid'      => Arr::get($this->config, 'wechat_app.appid'),
-                'secret'     => Arr::get($this->config, 'wechat_app.secret'),
+                'appid'      => $appid,
+                'secret'     => $secret,
             ],
         ]);
 
@@ -175,9 +184,9 @@ class WechatUtils
      * @param [String] $code
      * @return User
      */
-    public static function auth($code)
+    public static function auth($code, $platform)
     {
-        $accessTokens = WechatUtils::getInstance()->accessToken($code);
+        $accessTokens = WechatUtils::getInstance()->accessToken($code, $platform);
 
         if (!is_array($accessTokens) || !array_key_exists('unionid', $accessTokens) || !array_key_exists('openid', $accessTokens)) {
             return failed_response(500, '授权失败,参数错误');

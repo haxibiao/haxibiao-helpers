@@ -134,7 +134,7 @@ class WechatUtils
             $appid = Arr::get($this->config, 'tiantianchuti.appid');
             $secret = Arr::get($this->config, 'tiantianchuti.secret');
         }
-        dd($secret);
+
         $response = $this->client->request('GET', $accessTokenUrl, [
             'query' => [
                 'grant_type' => 'authorization_code',

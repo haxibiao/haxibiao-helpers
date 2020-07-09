@@ -122,16 +122,16 @@ class WechatUtils
      * @param [String] $code
      * @return Array
      */
-    public function accessToken($code, $platform)
+    public function accessToken($code, $platform = 'dazhuan')
     {
         $accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token';
 
         //默认使用答赚安卓版Wechat
-        $appid = Arr::get($this->config, 'wechat_app.appid');
+        $appid  = Arr::get($this->config, 'wechat_app.appid');
         $secret = Arr::get($this->config, 'wechat_app.secret');
         //天天出题，使用ios版wechat
         if ($platform == "TTCT") {
-            $appid = Arr::get($this->config, 'tiantianchuti.appid');
+            $appid  = Arr::get($this->config, 'tiantianchuti.appid');
             $secret = Arr::get($this->config, 'tiantianchuti.secret');
         }
 

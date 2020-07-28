@@ -7,6 +7,8 @@ use App\OAuth;
 use App\User;
 use App\Wallet;
 use GuzzleHttp\Client;
+use haxibiao\helpers\WechatMgUtils;
+use Haxibiao\Helpers\WechatUtils;
 use Illuminate\Support\Arr;
 
 /** inner class 1 --------------------- */
@@ -195,6 +197,11 @@ class WechatUtils
         //查询是否有该用户
         $user = OAuth::findWechatUser($accessTokens['unionid']);
         if (!is_null($user)) {
+
+            if ($user->isDegregister()) {
+                return failed_response(500, '授权失败,参数错误');
+            }
+
             return successful_response(200, ['user' => [
                 'id'        => $user->id,
                 'api_token' => $user->api_token,

@@ -3,6 +3,7 @@
 namespace Haxibiao\Helpers;
 
 use anerg\OAuth2\OAuth as SnsOAuth;
+use App\Exceptions\ErrorCode\ErrorCode;
 use App\Exceptions\UserException;
 use App\OAuth;
 use App\User;
@@ -60,8 +61,7 @@ class OAuthUtils
 
     public static function bindAlipay($user, $code)
     {
-
-        throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
+        throw_if(empty($code), UserException::class, '绑定失败,参数错误!', ErrorCode::PARAMES_ERROR);
         $userInfo = self::userInfo($code);
         $openId   = Arr::get($userInfo, 'user_id');
         throw_if(empty($openId), UserException::class, '授权失败,请稍后再试!');

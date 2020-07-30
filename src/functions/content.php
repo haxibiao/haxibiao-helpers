@@ -13,11 +13,9 @@ function indexArticles()
 {
     $qb = Article::from('articles')
         ->has('user')
-        ->has('category')
         ->exclude(['body', 'json'])
         ->where('status', '>', 0)
         ->whereNull('source_url')
-        ->whereNotNull('category_id')
         ->latest('updated_at');
 
     $total    = $qb->count();

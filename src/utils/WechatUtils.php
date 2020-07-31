@@ -341,14 +341,7 @@ class WechatUtils
      */
     public function syncWeChatInfo($wechatUserInfo, $user)
     {
-        $gender = null;
-        if ($wechatUserInfo['sex'] == 1) {
-            $gender = User::MALE_GENDER;
-        } else if ($wechatUserInfo['sex'] == 2) {
-            $gender = User::FEMALE_GENDER;
-        }
         $user->name = $wechatUserInfo['nickname'];
-        $user->gender = $gender;
         $headimgurl = $wechatUserInfo['headimgurl'];
         //将用户头像上传到服务器
         $stream  = file_get_contents($headimgurl);

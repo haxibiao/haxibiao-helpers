@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use haxibiao\helpers\WechatMgUtils;
 use Haxibiao\Helpers\WechatUtils;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 /** inner class 1 --------------------- */
 
@@ -332,5 +333,29 @@ class WechatUtils
         $oAuth = OAuth::where(['oauth_type' => 'wechat', 'oauth_id' => $accessTokens['unionid']])->first();
 
         return $oAuth;
+    }
+
+    /**
+     * @param $wechatUserInfo
+     * @param $user
+     */
+    public function syncWeChatInfo($wechatUserInfo, $user)
+    {
+        $gender = null;
+        if ($wechatUserInfo['sex'] == 1) {
+            $gender = User::MALE_GENDER;
+        } else if ($wechatUserInfo['sex'] == 2) {
+            $gender = User::FEMALE_GENDER;
+        }
+        $user->name = $wechatUserInfo['nickname'];
+        $user->gender = $gender;
+        $headimgurl = $wechatUserInfo['headimgurl'];
+        //将用户头像上传到服务器
+        $stream  = file_get_contents($headimgurl);
+        $hash    = hash_file('md5',$headimgurl);
+        $path    = 'images/' . $hash .'.jpg';
+        Storage::disk('public')->put($path,$stream);
+        $user->avatar=Storage::url($path);
+        $user->save();
     }
 }

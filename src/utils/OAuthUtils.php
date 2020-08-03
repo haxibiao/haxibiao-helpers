@@ -64,12 +64,11 @@ class OAuthUtils
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!', ErrorCode::PARAMES_ERROR);
         $userInfo = self::userInfo($code);
         $openId   = Arr::get($userInfo, 'user_id');
-        throw_if(empty($openId), UserException::class, '授权失败,请稍后再试!');
+        throw_if(empty($openId), UserException::class, $userInfo['errorMsg'] ?? '授权失败,请稍后再试!');
 
         $oauth = OAuth::firstOrNew(['oauth_type' => 'alipay', 'oauth_id' => $openId]);
 
         throw_if(isset($oauth->id), UserException::class, '该支付宝已被绑定,请尝试其他账户!');
-
 
         //更新OAuth绑定
         $oauth->user_id = $user->id;

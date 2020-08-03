@@ -8,7 +8,6 @@ use App\User;
 use App\Wallet;
 use GuzzleHttp\Client;
 use haxibiao\helpers\WechatMgUtils;
-use Haxibiao\Helpers\WechatUtils;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
@@ -345,10 +344,10 @@ class WechatUtils
         $headimgurl = $wechatUserInfo['headimgurl'];
         //将用户头像上传到服务器
         $stream  = file_get_contents($headimgurl);
-        $hash    = hash_file('md5',$headimgurl);
-        $path    = 'images/' . $hash .'.jpg';
-        Storage::cloud()->put($path,$stream);
-        $user->avatar=Storage::cloud()->url($path);
+        $hash    = hash_file('md5', $headimgurl);
+        $path    = 'images/' . $hash . '.jpg';
+        Storage::cloud()->put($path, $stream);
+        $user->avatar = Storage::cloud()->url($path);
         $user->save();
     }
 }

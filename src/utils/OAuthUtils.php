@@ -61,7 +61,7 @@ class OAuthUtils
 
     public static function bindAlipay($user, $code)
     {
-        throw_if(empty($code), UserException::class, '绑定失败,参数错误!', ErrorCode::PARAMES_ERROR);
+        throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         $userInfo = self::userInfo($code);
         $openId   = Arr::get($userInfo, 'user_id');
         throw_if(empty($openId), UserException::class, $userInfo['errorMsg'] ?? '授权失败,请稍后再试!');

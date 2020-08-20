@@ -2,15 +2,16 @@
 
 namespace Haxibiao\Helpers;
 
-use App\Exceptions\UserException;
-use App\OAuth;
 use App\User;
+use App\OAuth;
+use Exception;
 use App\Wallet;
 use App\Withdraw;
-use Haxibiao\Helpers\TikTokUtils;
-use Haxibiao\Helpers\WechatUtils;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Exceptions\UserException;
+use Haxibiao\Helpers\TikTokUtils;
+use Haxibiao\Helpers\WechatUtils;
 
 /**
  * 第三方平台绑定，授权工具类
@@ -98,6 +99,7 @@ class OAuthUtils
             'merchantCertPath'   => base_path('cert/alipay/auth/appCertPublicKey_2019112969489742.crt'),
         ];
         try {
+            error_reporting(E_ALL ^ E_DEPRECATED);
             $alipayUtils = AlipayUtils::config($config);
             $userInfo    = $alipayUtils->userInfo($code);
         } catch (\Exception $ex) {

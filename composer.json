@@ -1,41 +1,40 @@
 {
-  "name": "haxibiao/helpers",
-  "description": "哈希表通用帮助函数和类",
-  "type": "project",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "ivan",
-      "email": "ivan@haxibiao.com"
+    "name": "haxibiao/helpers",
+    "description": "哈希表通用帮助函数和类",
+    "type": "project",
+    "license": "MIT",
+    "authors": [{
+        "name": "ivan",
+        "email": "ivan@haxibiao.com"
+    }],
+    "require": {
+        "laravel/helpers": "^1.2",
+        "simplesoftwareio/simple-qrcode": "^2.0",
+        "alipaysdk/easysdk": "^2.0",
+        "laravel/nova": "^3.0@dev"
+    },
+    "repositories": {
+        "nova": {
+            "type": "vcs",
+            "url": "http://code.haxibiao.cn/web/nova.git"
+        }
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": {
+            "Haxibiao\\helpers\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Haxibiao\\helpers\\HelpersServiceProvider"
+            ]
+        }
     }
-  ],
-  "require": {
-    "laravel/helpers": "^1.2",
-    "simplesoftwareio/simple-qrcode": "^2.0",
-    "laravel/nova": "^3.0@dev"
-  },
-  "repositories": {
-    "nova": {
-      "type": "vcs",
-      "url": "http://code.haxibiao.cn/web/nova.git"
-    }
-  },
-  "minimum-stability": "dev",
-  "autoload": {
-    "psr-0": {
-      "Haxibiao\\helpers\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "classmap": [
-      "tests/"
-    ]
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Haxibiao\\helpers\\HelpersServiceProvider"
-      ]
-    }
-  }
 }

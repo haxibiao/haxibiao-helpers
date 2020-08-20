@@ -2,8 +2,6 @@
 
 namespace Haxibiao\Helpers;
 
-use anerg\OAuth2\OAuth as SnsOAuth;
-use App\Exceptions\ErrorCode\ErrorCode;
 use App\Exceptions\UserException;
 use App\OAuth;
 use App\User;
@@ -90,20 +88,18 @@ class OAuthUtils
      */
     public static function userInfo($code)
     {
-        $userInfo = [];
-
+        $userInfo          = [];
         $_GET['auth_code'] = $code;
         $config            = [
-            // 默认采用答赚 appid
-            'app_id'      => env('ALIPAY_AUTH_APP_ID', null) ?? '2019112969489742',
-            'scope'       => 'auth_user',
-            'pem_private' => base_path('cert/alipay/pem/private.pem'),
-            'pem_public'  => base_path('cert/alipay/pem/public.pem'),
+            'appId'              => env('ALIPAY_AUTH_APP_ID', '2019112969489742'),
+            'merchantPrivateKey' => file_get_contents(base_path('cert/alipay/auth/private_key')),
+            'alipayCertPath'     => base_path('cert/alipay/auth/alipayCertPublicKey_RSA2.crt'),
+            'alipayRootCertPath' => base_path('cert/alipay/auth/alipayRootCert.crt'),
+            'merchantCertPath'   => base_path('cert/alipay/auth/appCertPublicKey_2019112969489742.crt'),
         ];
         try {
-            $snsOAuth = SnsOAuth::alipay($config);
-
-            $userInfo = $snsOAuth->userinfoRaw();
+            $alipayUtils = AlipayUtils::config($config);
+            $userInfo    = $alipayUtils->userInfo($code);
         } catch (\Exception $ex) {
             $userInfo['errorMsg'] = $ex->getMessage();
         }

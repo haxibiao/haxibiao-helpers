@@ -58,21 +58,26 @@ function is_testing_env()
 function is_prod_env()
 {
     $environment = ['prod', 'production'];
-    return in_array(config('app.env'), $environment);
+    return app()->environment($environment);
+}
+
+function is_hotfix_env()
+{
+    return app()->environment('hotfix');
 }
 
 function is_local_env()
 {
-    return config('app.env') == 'local';
+    return app()->environment('local');
 }
 
 function is_dev_env()
 {
-    return config('app.env') == 'dev';
+    return app()->environment('dev');
 }
 function is_prod()
 {
-    return env('APP_ENV') == 'prod';
+    return app()->environment('prod');
 }
 
 function is_night()

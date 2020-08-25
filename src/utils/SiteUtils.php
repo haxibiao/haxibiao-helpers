@@ -88,7 +88,7 @@ class SiteUtils
 
     public function getEndPoint($domain)
     {
-        if (is_prod_env()) {
+        if (is_prod_env() || is_hotfix_env()) {
             $subDomain = '';
         } else if (is_staging_env()) {
             $subDomain = 'staging.';

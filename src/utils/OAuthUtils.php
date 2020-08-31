@@ -13,6 +13,7 @@ use App\Exceptions\UserException;
 use Haxibiao\Helpers\TikTokUtils;
 use Haxibiao\Helpers\WechatUtils;
 
+
 /**
  * 第三方平台绑定，授权工具类
  */

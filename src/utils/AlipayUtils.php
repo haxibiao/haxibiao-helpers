@@ -5,7 +5,7 @@ namespace Haxibiao\Helpers;
 use Alipay\EasySDK\Kernel\Config;
 use Alipay\EasySDK\Kernel\Factory;
 use Exception;
-use Haxibiao\Helpers\AlipayUtils;
+
 
 class AlipayUtils
 {
@@ -71,5 +71,4 @@ class AlipayUtils
 
         return isset($body['alipay_system_oauth_token_response']) ? $body['alipay_system_oauth_token_response'] : $body;
     }
-
 }

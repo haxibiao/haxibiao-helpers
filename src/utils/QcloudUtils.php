@@ -27,19 +27,11 @@ class QcloudUtils
     {
         $vod = self::initVod();
         for ($retry = 0; $retry < 3; $retry++) {
-            if ($retry > 0) {
-                echo "$apiAction retry at " . $retry;
-            }
             $response = $vod->$apiAction($params);
             if ($response == false) {
-                $error = $vod->getError();
-                echo "$apiAction failed, code: " . $error->getCode() .
-                    ", message: " . $error->getMessage() .
-                    "ext: " . var_export($error->getExt(), true) . "\n";
                 continue;
-            } else {
-                return $response;
             }
+            return $response;
         }
     }
 

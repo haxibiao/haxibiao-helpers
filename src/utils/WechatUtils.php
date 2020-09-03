@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 use App\Exceptions\UserException;
 use Haxibiao\Helpers\WechatUtils;
 use haxibiao\helpers\WechatMgUtils;
-use App\Exceptions\ErrorCode\ErrorCode;
 use Illuminate\Support\Facades\Storage;
 
 /** inner class 1 --------------------- */

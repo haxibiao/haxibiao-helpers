@@ -2,13 +2,16 @@
 
 namespace Haxibiao\Helpers;
 
-use App\Exceptions\UserException;
-use App\OAuth;
 use App\User;
+use App\OAuth;
 use App\Wallet;
 use GuzzleHttp\Client;
-use haxibiao\helpers\WechatMgUtils;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Exceptions\UserException;
+use Haxibiao\Helpers\WechatUtils;
+use haxibiao\helpers\WechatMgUtils;
+use App\Exceptions\ErrorCode\ErrorCode;
 use Illuminate\Support\Facades\Storage;
 
 /** inner class 1 --------------------- */
@@ -330,6 +333,8 @@ class WechatUtils
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
         //建立oauth关联
         $oAuth = OAuth::where(['oauth_type' => 'wechat', 'oauth_id' => $accessTokens['unionid']])->first();
+        $user  = $oAuth->user;
+        throw_if(!is_null($user) && method_exists($user, 'isDegregister') && $user->isDegregister(), UserException::class, '登录失败,该账户已注销!');
 
         return $oAuth;
     }
@@ -343,9 +348,9 @@ class WechatUtils
         $user->name = $wechatUserInfo['nickname'];
         $headimgurl = $wechatUserInfo['headimgurl'];
         //将用户头像上传到服务器
-        $stream  = file_get_contents($headimgurl);
-        $hash    = hash_file('md5', $headimgurl);
-        $path    = 'images/' . $hash . '.jpg';
+        $stream = file_get_contents($headimgurl);
+        $hash   = hash_file('md5', $headimgurl);
+        $path   = 'images/' . $hash . '.jpg';
         Storage::cloud()->put($path, $stream);
         $user->avatar = Storage::cloud()->url($path);
         $user->save();

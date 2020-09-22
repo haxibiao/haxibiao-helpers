@@ -64,4 +64,26 @@ class FFMpegUtils
             return null;
         }
     }
+
+    /**
+     *  @param:path 可是本地 or url
+     */
+    public static function addMediaMetadata($path, $metadata)
+    {
+        $fileName = \Str::random(12) . '.MP4';
+        exec('ffmpeg -i ' . $path . ' -y  -metadata  comment=' . $metadata . ' -f  mp4 ' . storage_path('app/public/' . $fileName));
+
+        return storage_path('app/public/' . $fileName);
+    }
+
+    /**
+     *  @param:path 可是本地 or url
+     */
+    public static function getMediaMetadata($path)
+    {
+        exec('ffprobe -v quiet -show_format -show_streams -print_format json ' . $path, $info);
+
+        $info = json_decode(implode(" ", $info), true);
+        return $info;
+    }
 }

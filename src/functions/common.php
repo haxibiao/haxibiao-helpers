@@ -26,6 +26,12 @@ function get_apk_link($version = "")
     return $link;
 }
 
+//答赚网页用
+function get_ios_apk_link()
+{
+    return config('app.ios_link');
+}
+
 function get_domain_key()
 {
     return str_replace('.', '_', get_domain());

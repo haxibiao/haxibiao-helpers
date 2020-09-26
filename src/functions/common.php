@@ -2,6 +2,29 @@
 
 use Illuminate\Support\Carbon;
 
+function numberToReadable($number, $precision = 1, $divisors = null)
+{
+    $shorthand = '';
+    $divisor = pow(1000, 0);
+    if ( ! isset($divisors) ) {
+        $divisors = [
+            $divisor => $shorthand, // 1000^0 == 1
+            pow(1000, 1) => 'K', // Thousand
+            pow(1000, 2) => 'M', // Million
+            pow(1000, 3) => 'B', // Billion
+        ];
+    }
+    foreach ($divisors as $divisor => $shorthand) {
+        if (abs($number) < ($divisor * 1000)) {
+            break;
+        }
+    }
+    if($divisor < pow(1000, 1)){
+        $precision = 0;
+    }
+    return number_format($number / $divisor, $precision).$shorthand;
+}
+
 /**
  * 使用场景:无特定使用场景,通用!
  * 全局公共辅助函数

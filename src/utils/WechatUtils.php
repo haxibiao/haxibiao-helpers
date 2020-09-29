@@ -271,7 +271,7 @@ class WechatUtils
         $oAuth = OAuth::firstOrNew([
             'oauth_type' => 'wechat',
             'oauth_id'   => $accessTokens['unionid'],
-        ], ['union_id' => $$accessTokens['unionid']]);
+        ], ['union_id' => $accessTokens['unionid']]);
 
         if (isset($oAuth->id)) {
             $oAuthData = $oAuth->data;
@@ -315,7 +315,7 @@ class WechatUtils
         $oAuth = OAuth::firstOrNew([
             'oauth_type' => 'wechat',
             'oauth_id'   => $unionId,
-        ], ['union_id' => $$accessTokens['unionid']]);
+        ], ['union_id' => $accessTokens['unionid']]);
 
         throw_if(isset($oAuth->id), UserException::class, '绑定失败,该微信已绑定其他账户!');
 

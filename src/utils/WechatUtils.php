@@ -315,6 +315,41 @@ class WechatUtils
         return $oAuth;
     }
 
+    public static function bindWechatWithCode(User $user, $code)
+    {
+        throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
+        //获取微信token
+        $accessTokens = WechatUtils::getInstance()->accessToken($code);
+        throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
+
+        $oAuth = OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']));
+        throw_if($oAuth->user_id != $user->id, UserException::class, '绑定失败,该微信已绑定其他账户!');
+
+        //同步wallet OpenId
+        $wallet          = Wallet::firstOrNew(['user_id' => $user->id]);
+        $wallet->open_id = $accessTokens['openid'];
+        $wallet->save();
+
+        return $oAuth;
+    }
+
+    public static function bindWechatWithToken(User $user, $accessToken, $openId)
+    {
+        //获取微信token
+        $accessTokens = WechatUtils::getInstance()->userInfo($accessToken, $openId);
+        throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
+
+        $oAuth = OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']));
+        throw_if($oAuth->user_id != $user->id, UserException::class, '绑定失败,该微信已绑定其他账户!');
+
+        //同步wallet OpenId
+        $wallet          = Wallet::firstOrNew(['user_id' => $user->id]);
+        $wallet->open_id = $accessTokens['openid'];
+        $wallet->save();
+
+        return $oAuth;
+    }
+
     public static function oldBindWechat(User $user, $unionId = null, $code = null)
     {
         throw_if(is_null($unionId) && is_null($code), UserException::class, '绑定失败,参数错误!');

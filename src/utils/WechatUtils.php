@@ -267,20 +267,27 @@ class WechatUtils
         //获取微信token
         $accessTokens = WechatUtils::getInstance()->accessToken($code);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
-        //建立oauth关联
-        $oAuth = OAuth::firstOrNew([
-            'oauth_type' => 'wechat',
-            'oauth_id'   => $accessTokens['unionid'],
-        ], ['union_id' => $accessTokens['unionid']]);
 
-        if (isset($oAuth->id)) {
-            $oAuthData = $oAuth->data;
-            throw_if(isset($oAuthData['openid']), UserException::class, '绑定失败,该微信已绑定其他账户!');
+        $oauthModel = new OAuth;
+        if (\method_exists($oauthModel, 'store')) {
+            $oAuth = OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']));
+            throw_if($oAuth->user_id != $user->id, UserException::class, '绑定失败,该微信已绑定其他账户!');
+        } else {
+            //建立oauth关联
+            $oAuth = OAuth::firstOrNew([
+                'oauth_type' => 'wechat',
+                'oauth_id'   => $accessTokens['openid'],
+            ], ['union_id' => $accessTokens['unionid']]);
+
+            if (isset($oAuth->id)) {
+                $oAuthData = $oAuth->data;
+                throw_if(isset($oAuthData['openid']), UserException::class, '绑定失败,该微信已绑定其他账户!');
+            }
+
+            $oAuth->user_id = $user->id;
+            $oAuth->data    = Arr::only($accessTokens, ['openid', 'refresh_token']);
+            $oAuth->save();
         }
-
-        $oAuth->user_id = $user->id;
-        $oAuth->data    = Arr::only($accessTokens, ['openid', 'refresh_token']);
-        $oAuth->save();
 
         //同步wallet OpenId
         $wallet          = Wallet::firstOrNew(['user_id' => $user->id]);
@@ -331,8 +338,7 @@ class WechatUtils
         $accessTokens = WechatUtils::$instance->accessToken($code);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
         //建立oauth关联
-        $oAuth = OAuth::where(['oauth_type' => 'wechat', 'oauth_id' => $accessTokens['unionid']])->first();
-        $user  = $oAuth->user;
+        $user = OAuth::findWechatUser($unionId);
         throw_if(!is_null($user) && method_exists($user, 'isDegregister') && $user->isDegregister(), UserException::class, '登录失败,该账户已注销!');
 
         return $oAuth;

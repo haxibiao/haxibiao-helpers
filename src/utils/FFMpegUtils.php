@@ -3,6 +3,7 @@
 namespace Haxibiao\Helpers;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FFMpegUtils
 {
@@ -70,10 +71,20 @@ class FFMpegUtils
      */
     public static function addMediaMetadata($path, $metadata)
     {
-        $fileName = \Str::random(12) . '.MP4';
-        exec('ffmpeg -i ' . $path . ' -y  -metadata  comment=' . $metadata . ' -f  mp4 ' . storage_path('app/public/' . $fileName));
+        $fileName = Str::random(12) . '.mp4';
+        // 输出文件放系统临时文件夹，随系统自动清理
+        $outputFilePath  = sys_get_temp_dir() . $fileName;
+        /**
+         * 参数说明
+         * -i 输入文件
+         * -y 强制覆盖输出目录下同名文件
+         * -c copy 直接复制第一个视频的音频流，不进行编码
+         * -metadata 修改medata信息
+         * -f 文件的输出格式
+         */
+        exec('ffmpeg -i ' . $path . ' -y -c copy  -metadata  comment=' . $metadata . ' -f  mp4 ' . $outputFilePath);
 
-        return storage_path('app/public/' . $fileName);
+        return $outputFilePath;
     }
 
     /**

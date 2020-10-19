@@ -69,7 +69,7 @@ class FFMpegUtils
     /**
      *  @param:path 可是本地 or url
      */
-    public static function addMediaMetadata($path, $metadata)
+    public static function addMediaMetadata($path, $comment = null, $title = null)
     {
         $fileName = Str::random(12) . '.mp4';
         // 输出文件放系统临时文件夹，随系统自动清理
@@ -82,8 +82,14 @@ class FFMpegUtils
          * -metadata 修改medata信息
          * -f 文件的输出格式
          */
-        exec('ffmpeg -i ' . $path . ' -y -c copy  -metadata  comment=' . $metadata . ' -f  mp4 ' . $outputFilePath);
-
+        $command = "ffmpeg -i {$path} -y -c copy  -metadata ";
+        if($comment){
+            $command .= " comment={$comment}";
+        }
+        if($title){
+            $command .= " title={$title}";
+        }
+        exec($command.' -f  mp4 ' . $outputFilePath);
         return $outputFilePath;
     }
 

@@ -2,6 +2,7 @@
 
 namespace Haxibiao\Helpers;
 
+use Haxibiao\Helpers\utils\SensitiveUtils;
 use Illuminate\Support\ServiceProvider;
 
 class HelpersServiceProvider extends ServiceProvider
@@ -24,6 +25,12 @@ class HelpersServiceProvider extends ServiceProvider
         $this->commands([
             InstallCommand::class,
         ]);
+
+        $this->app->singleton('SensitiveUtils', function($app)
+        {
+            return SensitiveUtils::init()
+                ->setTreeByFile(__DIR__.'/utils/Sensitive/words.txt');
+        });
     }
 
     /**

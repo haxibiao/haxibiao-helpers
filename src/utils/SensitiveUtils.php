@@ -212,7 +212,7 @@ class SensitiveUtils
     }
 
     /**
-     * 被检测内容是否合法 check
+     * 被检测内容是否合法
      *
      * @param $content
      *

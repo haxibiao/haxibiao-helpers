@@ -37,6 +37,18 @@ class SensitiveUtils
     protected static $badWordList = null;
 
     /**
+     * 干扰因子集合
+     * @var array
+     */
+    private $disturbList = array();
+
+    public function interference($disturbList = array())
+    {
+        $this->disturbList = $disturbList;
+        return $this;
+    }
+
+    /**
      * 获取单例
      *
      * @return self
@@ -105,6 +117,11 @@ class SensitiveUtils
             $tempMap = $this->wordTree;
             for ($i = $length; $i < $this->contentLength; $i++) {
                 $keyChar = mb_substr($content, $i, 1, 'utf-8');
+
+                if ($this->checkDisturb($keyChar)) {
+                    $matchFlag++;
+                    continue;
+                }
 
                 // 获取指定节点树
                 $nowMap = $tempMap->get($keyChar);
@@ -227,6 +244,10 @@ class SensitiveUtils
             $tempMap = $this->wordTree;
             for ($i = $length; $i < $this->contentLength; $i++) {
                 $keyChar = mb_substr($content, $i, 1, 'utf-8');
+                if ($this->checkDisturb($keyChar)) {
+                    $matchFlag++;
+                    continue;
+                }
 
                 // 获取指定节点树
                 $nowMap = $tempMap->get($keyChar);
@@ -320,5 +341,15 @@ class SensitiveUtils
         }
 
         return $str;
+    }
+
+    /**
+     * 干扰因子检测
+     * @param $word
+     * @return bool
+     */
+    private function checkDisturb($word)
+    {
+        return in_array($word, $this->disturbList);
     }
 }

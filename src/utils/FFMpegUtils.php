@@ -73,7 +73,7 @@ class FFMpegUtils
     {
         $fileName = Str::random(12) . '.mp4';
         // 输出文件放系统临时文件夹，随系统自动清理
-        $outputFilePath  = sys_get_temp_dir() . $fileName;
+        $outputFilePath  = sys_get_temp_dir() .'/'. $fileName;
         /**
          * 参数说明
          * -i 输入文件

@@ -23,14 +23,14 @@ class SensitiveUtils
     private static $_instance = null;
 
     /**
-     * 铭感词库树
+     * 敏感词库树
      *
      * @var HashMap|null
      */
     protected $wordTree = null;
 
     /**
-     * 存放待检测语句铭感词
+     * 存放待检测语句敏感词
      *
      * @var array|null
      */
@@ -51,7 +51,7 @@ class SensitiveUtils
 
 
     /**
-     * 构建铭感词树【文件模式】
+     * 构建敏感词树【文件模式】
      *
      * @param string $filepath
      *
@@ -59,7 +59,6 @@ class SensitiveUtils
      */
     public function setTreeByFile($filepath = '')
     {
-
         // 词库树初始化
         $this->wordTree = $this->wordTree ?: new HashMap();
 
@@ -72,7 +71,7 @@ class SensitiveUtils
 
 
     /**
-     * 构建铭感词树【数组模式】
+     * 构建敏感词树【数组模式】
      *
      * @param null $sensitiveWords
      *

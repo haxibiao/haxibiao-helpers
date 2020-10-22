@@ -73,7 +73,7 @@ class FFMpegUtils
     {
         $fileName = Str::random(12) . '.mp4';
         // 输出文件放系统临时文件夹，随系统自动清理
-        $outputFilePath  = sys_get_temp_dir() .'/'. $fileName;
+        $outputFilePath  = sys_get_temp_dir() . '/' . $fileName;
         /**
          * 参数说明
          * -i 输入文件
@@ -83,13 +83,13 @@ class FFMpegUtils
          * -f 文件的输出格式
          */
         $command = "ffmpeg -i {$path} -y -c copy  -metadata ";
-        if($comment){
+        if ($comment) {
             $command .= " comment={$comment}";
         }
-        if($title){
+        if ($title) {
             $command .= " title={$title}";
         }
-        exec($command.' -f  mp4 ' . $outputFilePath);
+        exec($command . ' -f  mp4 ' . $outputFilePath);
         return $outputFilePath;
     }
 
@@ -102,5 +102,22 @@ class FFMpegUtils
 
         $info = json_decode(implode(" ", $info), true);
         return $info;
+    }
+
+
+    /**
+     * 横屏视频转竖屏视频分辨率
+     */
+    public static function ToPortrait($url, $width, $height)
+    {
+        $saveHeight = ceil($height * 3.16);
+        $location   = ($saveHeight - $height) / 2;
+        $extendsion = '.' . substr($url, strripos($url, ".") + 1);
+        $fileName   = uniqid() . $extendsion;
+        $savePath   = storage_path('app/public/videos/' . $fileName);
+        $command    = "ffmpeg -i {$url} -vf 'scale={$width}:{$height},
+        pad={$width}:{$saveHeight}:0:{$location}'  {$savePath}";
+        exec($command);
+        return $savePath;
     }
 }

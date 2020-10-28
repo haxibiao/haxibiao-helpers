@@ -4,6 +4,7 @@ namespace Haxibiao\Helpers;
 
 use anerg\OAuth2\OAuth as SnsOAuth;
 use Exception;
+use Haxibiao\Helpers\QPayUtils;
 use Illuminate\Support\Str;
 use Yansongda\Pay\Pay;
 
@@ -15,6 +16,7 @@ class PayUtils
     const PLATFORMS = [
         'alipay',
         'wechat',
+        'qq',
     ];
 
     private $platform;
@@ -30,7 +32,12 @@ class PayUtils
         }
 
         $this->platform = $platform;
-        $this->instance = Pay::$platform(config('pay.' . $platform));
+        if ($platform != 'qq') {
+            $this->instance = Pay::$platform(config('pay.' . $platform));
+        } else {
+            $this->instance = new QPayUtils;
+        }
+
     }
 
     public function transfer(string $outBizNo, string $payId, $realName, $amount, $remark = null)
@@ -62,6 +69,15 @@ class PayUtils
                 ],
                 'remark'       => $remark,
                 'order_title'  => $remark,
+            ];
+        } else if ($this->platform == 'qq') {
+            //QQ钱包 amount 单位:/分
+            $amount *= 100;
+            $order = [
+                'outBizNo'  => $outBizNo,
+                'openid'    => $payId,
+                'total_fee' => $amount,
+                'memo'      => $remark,
             ];
         }
 

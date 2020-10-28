@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Utils;
+namespace Haxibiao\Helpers;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class QPayUtils
@@ -19,37 +20,39 @@ class QPayUtils
         $this->client = new Client(['time_out' => 5]);
     }
 
-    // public function userInfo($accessToken, $openID)
-    // {
-    //     $userInfoUrl = 'https://graph.qq.com/user/get_user_info';
-    //     $response    = $this->client->request('GET', $userInfoUrl, [
-    //         'query' => [
-    //             'access_token'       => $accessToken,
-    //             'openid'             => $openID,
-    //             'oauth_consumer_key' => $this->config['appid'],
-    //         ],
-    //     ]);
-    //     $result = $response->getbody()->getContents();
+    public function userInfo($accessToken, $openID)
+    {
+        $userInfoUrl = 'https://graph.qq.com/user/get_user_info';
+        $response    = $this->client->request('GET', $userInfoUrl, [
+            'query' => [
+                'access_token'       => $accessToken,
+                'openid'             => $openID,
+                'oauth_consumer_key' => $this->config['appid'],
+            ],
+        ]);
+        $result = $response->getbody()->getContents();
 
-    //     return empty($result) ? null : json_decode($result, true);
-    // }
+        return empty($result) ? null : json_decode($result, true);
+    }
 
-    public function transfer(string $outBizNo, string $payId, $amount, $remark = null)
+    public function transfer(array $order)
     {
         $url                    = "https://api.qpay.qq.com/cgi-bin/epay/qpay_epay_b2c.cgi";
         $params                 = Arr::except($this->config, 'api_key');
         $params['nonce_str']    = Str::random(32);
-        $params['out_trade_no'] = $outBizNo;
-        $params['uin']          = $payId;
-        $params['total_fee']    = $amount;
-        $params['memo']         = $remark;
-        $params['sign']         = $this->generateSign($params, $this->config('api_key'));
-
+        $params['out_trade_no'] = $order['outBizNo'];
+        $params['openid']       = $order['openid'];
+        $params['total_fee']    = intval($order['total_fee']);
+        $params['memo']         = $order['memo'] ?? null;
+        $params['sign']         = $this->generateSign($params, $this->config['api_key']);
+        dump($params);
         //数组转XML
-        $XML      = $this->arrayToXml($parameter);
+        $XML = $this->arrayToXml($params);
         $response = $this->requestUrl($XML, $url);
+        dump($response);
         //XML转数组
         $result = $this->xmlToArray($response);
+        dump($result);
 
         return empty($result) ? null : $result;
     }

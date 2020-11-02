@@ -2,6 +2,25 @@
 
 use Illuminate\Support\Carbon;
 
+function randomDate($begintime, $endtime="", $is = true) {
+    $begin = strtotime($begintime);
+    $end = $endtime == "" ? mktime() : strtotime($endtime);
+    $timestamp = rand($begin, $end);
+    return $is ? date("Y-m-d H:i:s", $timestamp) : $timestamp;
+}
+
+function create_date_array($num = 10 , $begintime, $endtime){
+    $i=0;
+    $date_array = array();
+    while ($i < $num){
+        $date = randomDate($begintime,$endtime);
+        $date_array[$i]['time'] = $date;
+        $i++;
+    }
+    sort($date_array);
+    return $date_array;
+}
+
 function numberToReadable($number, $precision = 1, $divisors = null)
 {
     $shorthand = '';

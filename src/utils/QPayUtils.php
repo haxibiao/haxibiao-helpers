@@ -45,14 +45,11 @@ class QPayUtils
         $params['total_fee']    = intval($order['total_fee']);
         $params['memo']         = $order['memo'] ?? null;
         $params['sign']         = $this->generateSign($params, $this->config['api_key']);
-        dump($params);
         //数组转XML
-        $XML = $this->arrayToXml($params);
+        $XML      = $this->arrayToXml($params);
         $response = $this->requestUrl($XML, $url);
-        dump($response);
         //XML转数组
         $result = $this->xmlToArray($response);
-        dump($result);
 
         return empty($result) ? null : $result;
     }
@@ -99,7 +96,6 @@ class QPayUtils
 
         //拼接APIKey
         $signTemp = $signTemp . 'key' . '=' . $apiKey;
-
         //计算签名
         $sign = strtoupper(md5($signTemp));
 

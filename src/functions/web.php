@@ -454,6 +454,12 @@ function getLatestAppVersion()
 
 function get_domain()
 {
+    if ($host = request()->getHost()) {
+        $host = str_replace("l.", "", $host);
+        $host = str_replace("www.", "", $host);
+        return $host;
+    }
+
     return env('APP_DOMAIN');
 }
 

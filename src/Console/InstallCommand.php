@@ -1,6 +1,6 @@
 <?php
 
-namespace Haxibiao\Helpers;
+namespace Haxibiao\Helpers\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;

@@ -4,6 +4,7 @@
 namespace Haxibiao\Helpers\utils;
 
 
+use App\AppConfig;
 use Haxibiao\Helpers\utils\Sensitive\HashMap;
 
 class SensitiveUtils
@@ -184,6 +185,10 @@ class SensitiveUtils
     public function replace($content, $replaceChar = '', $repeat = false, $matchType = 1)
     {
 
+         //敏感词开关
+        if(!$this->isOpen()){
+            return $content;
+        }
         $badWordList = self::$badWordList ? self::$badWordList : $this->getBadWord($content, $matchType);
 
         // 未检测到敏感词，直接返回
@@ -236,6 +241,10 @@ class SensitiveUtils
      */
     public function islegal($content)
     {
+        //敏感词开关
+        if(!$this->isOpen()){
+           return false; 
+        }
         $this->contentLength = mb_strlen($content, 'utf-8');
 
         for ($length = 0; $length < $this->contentLength; $length++) {
@@ -351,5 +360,20 @@ class SensitiveUtils
     private function checkDisturb($word)
     {
         return in_array($word, $this->disturbList);
+    }
+
+    /**
+     * 敏感词开关
+     */
+    private function isOpen(){
+        
+        $config = AppConfig::where([
+            'name'  => 'sensitive',
+        ])->first();
+        if ($config && $config->state === AppConfig::STATUS_OFF) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

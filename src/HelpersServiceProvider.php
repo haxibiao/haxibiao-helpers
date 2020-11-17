@@ -1,10 +1,9 @@
 <?php
-
 namespace Haxibiao\Helpers;
 
-use Haxibiao\Helpers\Console\InstallCommand;
-use Haxibiao\Helpers\utils\SensitiveUtils;
 use Illuminate\Support\ServiceProvider;
+use Haxibiao\Helpers\utils\SensitiveUtils;
+use Haxibiao\Helpers\Console\InstallCommand;
 
 class HelpersServiceProvider extends ServiceProvider
 {

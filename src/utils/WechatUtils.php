@@ -1,14 +1,14 @@
 <?php
 
-namespace Haxibiao\Helpers;
+namespace Haxibiao\Helpers\utils;
 
 use App\Exceptions\UserException;
 use App\OAuth;
 use App\User;
 use App\Wallet;
 use GuzzleHttp\Client;
-use haxibiao\helpers\WechatMgUtils;
-use Haxibiao\Helpers\WechatUtils;
+use haxibiao\helpers\utils\WechatMgUtils;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Haxibiao\Helpers;
+namespace Haxibiao\Helpers\utils;
 
 use QcloudApi;
 

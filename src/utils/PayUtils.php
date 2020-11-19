@@ -4,7 +4,6 @@ namespace Haxibiao\Helpers\utils;
 
 use anerg\OAuth2\OAuth as SnsOAuth;
 use Exception;
-use Haxibiao\Helpers\QPayUtils;
 use Illuminate\Support\Str;
 use Yansongda\Pay\Pay;
 

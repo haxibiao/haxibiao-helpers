@@ -2,18 +2,20 @@
 
 use Illuminate\Support\Carbon;
 
-function randomDate($begintime, $endtime="", $is = true) {
-    $begin = strtotime($begintime);
-    $end = $endtime == "" ? mktime() : strtotime($endtime);
+function randomDate($begintime, $endtime = "", $is = true)
+{
+    $begin     = strtotime($begintime);
+    $end       = $endtime == "" ? mktime() : strtotime($endtime);
     $timestamp = rand($begin, $end);
     return $is ? date("Y-m-d H:i:s", $timestamp) : $timestamp;
 }
 
-function create_date_array($num = 10 , $begintime, $endtime){
-    $i=0;
+function create_date_array($num = 10, $begintime, $endtime)
+{
+    $i          = 0;
     $date_array = array();
-    while ($i < $num){
-        $date = randomDate($begintime,$endtime);
+    while ($i < $num) {
+        $date                   = randomDate($begintime, $endtime);
         $date_array[$i]['time'] = $date;
         $i++;
     }
@@ -24,10 +26,10 @@ function create_date_array($num = 10 , $begintime, $endtime){
 function numberToReadable($number, $precision = 1, $divisors = null)
 {
     $shorthand = '';
-    $divisor = pow(1000, 0);
-    if ( ! isset($divisors) ) {
+    $divisor   = pow(1000, 0);
+    if (!isset($divisors)) {
         $divisors = [
-            $divisor => $shorthand, // 1000^0 == 1
+            $divisor     => $shorthand, // 1000^0 == 1
             pow(1000, 1) => 'K', // Thousand
             pow(1000, 2) => 'M', // Million
             pow(1000, 3) => 'B', // Billion
@@ -38,10 +40,10 @@ function numberToReadable($number, $precision = 1, $divisors = null)
             break;
         }
     }
-    if($divisor < pow(1000, 1)){
+    if ($divisor < pow(1000, 1)) {
         $precision = 0;
     }
-    return number_format($number / $divisor, $precision).$shorthand;
+    return number_format($number / $divisor, $precision) . $shorthand;
 }
 
 /**
@@ -59,7 +61,7 @@ function get_apk_link($version = "")
         $app = 'damei';
     }
     $env = env('APP_ENV');
-    if ($env == 'prod') {
+    if ($env == 'prod' || $env == 'www') {
         $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-release$version.apk";
     } else {
         $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-$env" . $version . ".apk";

@@ -1,6 +1,6 @@
 <?php
 
-use Haxibiao\Helpers\QcloudUtils;
+use Haxibiao\Helpers\utils\QcloudUtils;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;

@@ -193,7 +193,7 @@ class WechatUtils
         $accessTokens = WechatUtils::getInstance()->accessToken($code, $platform);
 
         if (!is_array($accessTokens) || !array_key_exists('unionid', $accessTokens) || !array_key_exists('openid', $accessTokens)) {
-            return failed_response(500, '授权失败,参数错误');
+            return failed_response('授权失败,参数错误');
         }
 
         //查询是否有该用户
@@ -201,19 +201,19 @@ class WechatUtils
         if (!is_null($user)) {
 
             if ($user->isDegregister()) {
-                return failed_response(500, '授权失败,参数错误');
+                return failed_response('授权失败,参数错误');
             }
 
-            return successful_response(200, ['user' => [
+            return successful_response(['user' => [
                 'id'        => $user->id,
                 'api_token' => $user->api_token,
                 'account'   => $user->account,
                 'unionid'   => $accessTokens['unionid'],
                 'openid'    => $accessTokens['openid'],
-            ]]);
+            ]],200);
         }
 
-        return successful_response(200, $accessTokens);
+        return successful_response($accessTokens,200);
     }
 
     /**

@@ -264,7 +264,7 @@ function get_article_url($article)
     return $url;
 }
 
-function match($str)
+function match_str($str)
 {
     return true;
 }

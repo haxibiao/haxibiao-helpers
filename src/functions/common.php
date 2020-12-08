@@ -107,7 +107,7 @@ function is_testing_env()
 
 function is_prod_env()
 {
-    $environment = ['prod', 'production'];
+    $environment = ['prod', 'production', 'www'];
     return app()->environment($environment);
 }
 

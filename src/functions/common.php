@@ -296,7 +296,7 @@ function failed_response($message = '服务器开小差了...', $statusCode = 50
     ], $statusCode);
 }
 
-function successful_response($statusCode = 200, $data)
+function successful_response($data, $statusCode = 200)
 {
     return response()->json([
         'status' => 'SUCCESS',

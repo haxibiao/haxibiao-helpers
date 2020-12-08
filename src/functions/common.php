@@ -10,7 +10,7 @@ function randomDate($begintime, $endtime = "", $is = true)
     return $is ? date("Y-m-d H:i:s", $timestamp) : $timestamp;
 }
 
-function create_date_array( $begintime, $endtime, $num = 10)
+function create_date_array($begintime, $endtime, $num = 10)
 {
     $i          = 0;
     $date_array = array();
@@ -287,7 +287,7 @@ function array_reverse_keys($arr, $arrBak = [])
     return array_merge($result, $arrBak);
 }
 
-function failed_response($message = '服务器开小差了...',$statusCode = 500)
+function failed_response($message = '服务器开小差了...', $statusCode = 500)
 {
     return response()->json([
         'status'  => 'FAILED',
@@ -296,7 +296,7 @@ function failed_response($message = '服务器开小差了...',$statusCode = 500
     ], $statusCode);
 }
 
-function successful_response($data,$statusCode = 200)
+function successful_response($statusCode = 200, $data)
 {
     return response()->json([
         'status' => 'SUCCESS',

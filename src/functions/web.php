@@ -269,6 +269,11 @@ function match_str($str)
     return true;
 }
 
+function match($str)
+{
+    return true;
+}
+
 function get_top_nav_bg()
 {
     if (get_domain() == 'dianmoge.com') {

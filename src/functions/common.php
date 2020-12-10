@@ -417,3 +417,19 @@ function countWeight($data)
     $result = $temp[$int];
     return $result;
 }
+
+//随机一个昵称
+function randomName()
+{
+    $str          = file_get_contents(dirname(dirname(__FILE__)) . '/utils/Sensitive/names.txt');
+    $str_encoding = mb_convert_encoding($str, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5'); //转换字符集（编码）
+    $arr          = explode("\n", $str_encoding); //转换成数组
+
+    //去空值
+    $arr = array_filter($arr);
+    //去重复
+    $arr = array_unique($arr);
+
+    // dd($rows[random_int(0, count($rows))]);
+    return $arr[random_int(0, count($arr) - 1)] ?? "匿名用户";
+}

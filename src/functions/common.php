@@ -433,3 +433,27 @@ function randomName()
     // dd($rows[random_int(0, count($rows))]);
     return $arr[random_int(0, count($arr) - 1)] ?? "匿名用户";
 }
+
+//推送站点url喂给百度（提高收录效率）
+function pushSeoUrl($urls, $api)
+{
+    $ch      = curl_init();
+    $options = array(
+        CURLOPT_URL            => $api,
+        CURLOPT_POST           => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POSTFIELDS     => implode("\n", $urls),
+        CURLOPT_HTTPHEADER     => array('Content-Type: text/plain'),
+    );
+    curl_setopt_array($ch, $options);
+    $result = curl_exec($ch);
+    return $result;
+    //成功返回示例
+    //     {
+    //     "remain":99998,   当天剩余的可推送url条数
+    //     "success":2,   成功推送的url条数
+    //     "not_same_site":[],  由于不是本站url而未处理的url列表
+    //     "not_valid":[],  不合法的url列表
+    // }
+
+}

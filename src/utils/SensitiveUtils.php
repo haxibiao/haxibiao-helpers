@@ -370,7 +370,7 @@ class SensitiveUtils
         $config = AppConfig::where([
             'name'  => 'sensitive',
         ])->first();
-        if ($config && $config->state === AppConfig::STATUS_OFF) {
+        if (empty($config) || $config->state === AppConfig::STATUS_OFF) {
             return false;
         } else {
             return true;

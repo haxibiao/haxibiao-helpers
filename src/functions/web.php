@@ -324,7 +324,7 @@ function isPhone()
 
 function getAppStore()
 {
-    return request()->header('referrer') ?: 'haxibiao';
+    return request()->header('referer') ?: 'haxibiao';
 }
 
 function isHuawei()
@@ -383,8 +383,8 @@ function getAppId()
 
 function is_giql()
 {
-    $referrer = request()->header("referer") ?? '';
-    return str_contains($referrer, '/graphiql?');
+    $referer = request()->header("referer") ?? '';
+    return str_contains($referer, '/graphiql?');
 }
 
 /**
@@ -395,12 +395,12 @@ function is_giql()
  */
 function get_referer()
 {
-    $referrer = request()->header('referrer') ?? request()->get('referrer', 'unknown');
+    $referer = request()->header('referer') ?? request()->get('referer', 'unknown');
     //官方正式版也标注渠道为 APK
-    if ($referrer == 'null' || $referrer == 'undefined') {
-        $referrer = 'unknown';
+    if ($referer == 'null' || $referer == 'undefined') {
+        $referer = 'unknown';
     }
-    return $referrer;
+    return $referer;
 }
 
 function isTencent()

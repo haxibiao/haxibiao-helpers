@@ -193,7 +193,7 @@ function diffForHumansCN($time)
     return $time;
 }
 
-function smartPager($qb, $pageSize)
+function smartPager($qb, $pageSize = 10)
 {
     return isMobile() ? $qb->simplePaginate($pageSize) : $qb->paginate($pageSize);
 }

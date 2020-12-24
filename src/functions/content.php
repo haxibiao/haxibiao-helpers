@@ -2,6 +2,7 @@
 
 use App\Article;
 use App\Category;
+use App\Site;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
@@ -11,12 +12,18 @@ use Illuminate\Pagination\Paginator;
  */
 function indexArticles()
 {
-    $qb = Article::from('articles')
-        ->has('user')
-        ->exclude(['body', 'json'])
-        ->where('status', '>', 0)
-        ->whereNull('source_url')
-        ->latest('updated_at');
+    //FIXME： 重构新的seo帮助函数来获取基本mvc内容列表
+    if (config('cms.multiple_domains')) {
+        //站群模式
+        $site = Site::find(1);
+        $qb   = $site->articles()->exclude(['body', 'json'])->latest('siteables.updated_at');
+    } else {
+        $qb = Article::from('articles')
+            ->exclude(['body', 'json'])
+            ->where('status', '>', 0)
+            ->whereNull('source_url')
+            ->latest('updated_at');
+    }
 
     $total    = $qb->count();
     $articles = $qb->offset((request('page', 1) * 10) - 10)

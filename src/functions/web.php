@@ -4,6 +4,7 @@ use Haxibiao\Helpers\utils\QcloudUtils;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
+use Jenssegers\Agent\Facades\Agent;
 
 //FIXME: 需要重构到 haxibiao-media
 /**
@@ -77,79 +78,29 @@ function ajaxOrDebug()
     return request()->ajax() || request('debug');
 }
 
-//判断是否是移动端访问
 function isMobile()
 {
-    // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
-    if (isset($_SERVER['HTTP_X_WAP_PROFILE'])) {
-        return true;
-    }
-    // 如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
-    if (isset($_SERVER['HTTP_VIA'])) {
-        return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false; // 找不到为flase,否则为TRUE
-    }
-    // 判断手机发送的客户端标志,兼容性有待提高
-    if (isset($_SERVER['HTTP_USER_AGENT'])) {
-        $clientkeywords = array(
-            'mobile',
-            'nokia',
-            'sony',
-            'ericsson',
-            'mot',
-            'samsung',
-            'htc',
-            'sgh',
-            'lg',
-            'sharp',
-            'sie-',
-            'philips',
-            'panasonic',
-            'alcatel',
-            'lenovo',
-            'iphone',
-            'ipod',
-            'blackberry',
-            'meizu',
-            'android',
-            'netfront',
-            'symbian',
-            'ucweb',
-            'windowsce',
-            'palm',
-            'operamini',
-            'operamobi',
-            'openwave',
-            'nexusone',
-            'cldc',
-            'midp',
-            'wap',
-        );
-        // 从HTTP_USER_AGENT中查找手机浏览器的关键字
-        if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))) {
-            return true;
-        }
-    }
-    if (isset($_SERVER['HTTP_ACCEPT'])) {
-        // 协议法，因为有可能不准确，放到最后判断
-        // 如果只支持wml并且不支持html那一定是移动设备
-        // 如果支持wml和html但是wml在html之前则是移动设备
-        if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))) {
-            return true;
-        }
-    }
-    return false;
+    return Agent::isMobile();
 }
 
-function isDesktop()
+function isDeskTop()
 {
-    return !isMobile();
+    return Agent::isDesktop();
 }
 
 function isRobot()
 {
-    //TODO: 简单修复 agent 类不require 的错误，日后完善agent检测
-    return false;
-    // return \Agent::isRobot();
+    return Agent::isRobot();
+}
+
+function isChrome()
+{
+    return strtolower(Agent::browser()) == 'chrome';
+}
+
+function isPhone()
+{
+    return true;
 }
 
 function get_active_css($path, $full_match = 0)
@@ -315,11 +266,6 @@ function get_full_url($path)
         return $path;
     }
     return env('APP_URL') . $path;
-}
-
-function isPhone()
-{
-    return true;
 }
 
 function getAppStore()

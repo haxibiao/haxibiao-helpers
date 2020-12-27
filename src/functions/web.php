@@ -403,14 +403,17 @@ function getLatestAppVersion()
     return '2.8';
 }
 
+/**
+ * 返回当前请求的主域名
+ *
+ * @return string
+ */
 function get_domain()
 {
-    if ($host = request()->getHost()) {
-        $host = str_replace("l.", "", $host);
-        $host = str_replace("www.", "", $host);
-        return $host;
+    $host_parts = explode('.', Request::server('HTTP_HOST'));
+    if (count($host_parts) >= 2) {
+        return $host_parts[count($host_parts) - 2] . '.' . $host_parts[count($host_parts) - 1];
     }
-
     return env('APP_DOMAIN');
 }
 

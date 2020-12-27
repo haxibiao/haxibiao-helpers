@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 function randomDate($begintime, $endtime = "", $is = true)
 {
@@ -476,5 +477,6 @@ function push_baidu($urls, $token, $domain)
     if (str_contains($result, "success")) {
         return "成功";
     }
+    Log::error('提交百度失败:' . $result);
     return false;
 }

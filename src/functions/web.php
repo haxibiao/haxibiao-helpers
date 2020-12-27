@@ -414,7 +414,7 @@ function get_domain()
     if (count($host_parts) >= 2) {
         return $host_parts[count($host_parts) - 2] . '.' . $host_parts[count($host_parts) - 1];
     }
-    return env('APP_DOMAIN');
+    return request()->getHost();
 }
 
 //获取访客IP

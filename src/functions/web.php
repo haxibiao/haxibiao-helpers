@@ -410,7 +410,7 @@ function getLatestAppVersion()
  */
 function get_domain()
 {
-    $host_parts = explode('.', Request::server('HTTP_HOST'));
+    $host_parts = explode('.', request()->getHost());
     if (count($host_parts) >= 2) {
         return $host_parts[count($host_parts) - 2] . '.' . $host_parts[count($host_parts) - 1];
     }

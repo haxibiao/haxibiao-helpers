@@ -488,3 +488,28 @@ function push_baidu($urls, $token, $domain)
     Log::error('提交百度失败:' . $result);
     return $result;
 }
+
+/**
+ * 推送MIP数据给神马搜索
+ *
+ * @param array $urls 地址数组
+ * @param string $token 令牌
+ * @param string $domain 域名
+ * @param string $owner_email 站长邮箱
+ * @return string
+ */
+function push_shenma($urls, $token, $domain, $owner_email)
+{
+    $api     = 'https://data.zhanzhang.sm.cn/push?site=' . $domain . '&user_name=' . $owner_email . '&resource_name=mip_add&token=' . $token;
+    $ch      = curl_init();
+    $options = array(
+        CURLOPT_URL            => $api,
+        CURLOPT_POST           => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POSTFIELDS     => implode("\n", $urls),
+        CURLOPT_HTTPHEADER     => array('Content-Type: text/plain'),
+    );
+    curl_setopt_array($ch, $options);
+    $result = curl_exec($ch);
+    echo $result;
+}

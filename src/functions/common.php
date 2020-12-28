@@ -459,6 +459,14 @@ function pushSeoUrl($urls, $api)
 
 }
 
+/**
+ * 返回字符”成功“才算成功，其他都是失败原因
+ *
+ * @param array $urls
+ * @param string $token
+ * @param string $domain
+ * @return string
+ */
 function push_baidu($urls, $token, $domain)
 {
     $api = 'http://data.zz.baidu.com/urls?site=' . $domain . '&token=' . $token;
@@ -478,5 +486,5 @@ function push_baidu($urls, $token, $domain)
         return "成功";
     }
     Log::error('提交百度失败:' . $result);
-    return false;
+    return $result;
 }

@@ -404,17 +404,47 @@ function getLatestAppVersion()
 }
 
 /**
+ * 返回当前请求的主域名或二级域名
+ *
+ * @return string
+ */
+function get_sub_domain($sub = false)
+{
+    $host = request()->getHost();
+    //兼容本地开发域名
+    if (starts_with($host, "l.")) {
+        $host = str_replace("l.", "", $host);
+    }
+    $host_parts  = explode('.', $host);
+    $count_parts = count($host_parts);
+    //尊重二级域名
+    if ($sub) {
+        if ($count_parts >= 3) {
+            return $host_parts[$count_parts - 3] . '.' . $host_parts[$count_parts - 2] . '.' . $host_parts[$count_parts - 1];
+        }
+    }
+    //默认取顶级域名
+    if ($count_parts >= 2) {
+        return $host_parts[$count_parts - 2] . '.' . $host_parts[$count_parts - 1];
+    }
+
+    //本地host?
+    return $host;
+}
+
+/**
  * 返回当前请求的主域名
  *
  * @return string
  */
 function get_domain()
 {
-    $host_parts = explode('.', request()->getHost());
+    $host       = request()->getHost();
+    $host_parts = explode('.', $host);
     if (count($host_parts) >= 2) {
         return $host_parts[count($host_parts) - 2] . '.' . $host_parts[count($host_parts) - 1];
     }
-    return request()->getHost();
+    return $host;
 }
 
 //获取访客IP

@@ -513,3 +513,10 @@ function push_shenma($urls, $token, $domain, $owner_email)
     $result = curl_exec($ch);
     echo $result;
 }
+
+//使用方法类似random_int($minx,$max),返回该区间内保留两位小数点的随机浮点数。
+function randFloat($min = 0, $max = 1)
+{
+    $rand = $min + mt_rand() / mt_getrandmax() * ($max - $min);
+    return floatval(number_format($rand, 2));
+}

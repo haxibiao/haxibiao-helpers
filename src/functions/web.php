@@ -20,11 +20,14 @@ function processVideo($video)
     }
 }
 
+/**
+ * 强制https，需要先配置支持https的cos domain
+ */
 function cdnurl($path)
 {
     $path = "/" . $path;
     $path = str_replace('//', '/', $path);
-    return "http://" . env('COS_DOMAIN') . $path;
+    return "https://" . env('COS_DOMAIN') . $path;
 }
 
 /**

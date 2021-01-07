@@ -467,7 +467,7 @@ function pushSeoUrl($urls, $api)
  * @param string $domain
  * @return string
  */
-function push_baidu($urls, $token, $domain)
+function push_baidu($urls, $token, $domain,$proxy=null)
 {
     $api = 'http://data.zz.baidu.com/urls?site=' . $domain . '&token=' . $token;
 
@@ -481,6 +481,9 @@ function push_baidu($urls, $token, $domain)
     );
 
     curl_setopt_array($ch, $options);
+    if($proxy){
+        curl_setopt($ch, CURLOPT_PROXY, $proxy);
+    }
     $result = curl_exec($ch);
     if (str_contains($result, "success")) {
         return "成功";

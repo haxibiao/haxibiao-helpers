@@ -414,10 +414,11 @@ function getLatestAppVersion()
 function get_sub_domain($sub = false)
 {
     $host = request()->getHost();
-    //兼容本地开发域名
+    //兼容本地开发域名配置习惯
     if (starts_with($host, "l.")) {
         $host = str_replace("l.", "", $host);
     }
+
     $host_parts  = explode('.', $host);
     $count_parts = count($host_parts);
     //尊重二级域名
@@ -444,6 +445,21 @@ function get_domain()
 {
     $host       = request()->getHost();
     $host_parts = explode('.', $host);
+
+    //站群-未备案域名跳板回国内机房情况
+    if (config('cms.multi_domains') && count($host_parts) >= 3) {
+        $sub_domain = get_sub_domain(true);
+        //需要seo seed proxy_domains
+        if ($seos = app('seos')) {
+            foreach ($seos as $seo) {
+                if ($seo->group == 'proxy_domains') {
+                    if ($seo->value == $sub_domain) {
+                        return $seo->name;
+                    }
+                }
+            }
+        }
+    }
     if (count($host_parts) >= 2) {
         return $host_parts[count($host_parts) - 2] . '.' . $host_parts[count($host_parts) - 1];
     }

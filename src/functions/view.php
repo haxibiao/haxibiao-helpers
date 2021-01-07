@@ -1,6 +1,20 @@
 <?php
+//视图层辅助函数
 
 use GuzzleHttp\Client;
+
+/**
+ * 兼容cms模式的seo友好的https URL
+ */
+function seo_url($path)
+{
+    if (config('cms.multi_domains')) {
+        $path = parse_url($path, PHP_URL_PATH);
+        $path = ltrim($path, "\/");
+        return "https://" . get_domain() . "/" . $path;
+    }
+    return url($path);
+}
 
 function GetURL($content)
 {
@@ -39,7 +53,6 @@ function tomorrow()
 {
     return today()->tomorrow();
 }
-
 
 function CacheTodayCount($key, $count)
 {

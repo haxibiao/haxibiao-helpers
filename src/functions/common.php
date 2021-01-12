@@ -538,7 +538,7 @@ function push_baidu($urls, $token, $domain,$proxy=null)
     }
     $result = json_encode($result);
 
-    if (str_contains($result, " success")) {
+    if (str_contains($result, "success")) {
         return "成功";
     }
     return $result;

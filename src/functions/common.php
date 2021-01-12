@@ -469,26 +469,78 @@ function pushSeoUrl($urls, $api)
  */
 function push_baidu($urls, $token, $domain,$proxy=null)
 {
-    $api = 'http://data.zz.baidu.com/urls?site=' . $domain . '&token=' . $token;
+    // 格式化FormData
+    $urls = array_map(function ($url){
+        return urlencode($url);
+    },$urls);
+    $urls = implode('%0A',$urls);
 
-    $ch      = curl_init();
-    $options = array(
-        CURLOPT_URL            => $api,
-        CURLOPT_POST           => true,
+    $firstPartOfParamer = http_build_query([
+        'host' => $domain,
+        'token' => $token,
+    ]);
+    $paramers = $firstPartOfParamer.'&urls='.$urls;
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'http://tools.bugscaner.com/api/urltobaidu',
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POSTFIELDS     => implode("\n", $urls),
-        CURLOPT_HTTPHEADER     => array('Content-Type: text/plain'),
-    );
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 5,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $paramers,
+        CURLOPT_HTTPHEADER => array(
+            'Referer: http://tools.bugscaner.com/urltobaidu',
+            'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'
+        ),
+    ));
 
-    curl_setopt_array($ch, $options);
-    if($proxy){
-        curl_setopt($ch, CURLOPT_PROXY, $proxy);
+    $result = curl_exec($curl);
+    curl_close($curl);
+
+    if(!$result){
+        return json_encode([
+            'error'     => 401,
+            'message'   => 'baidu push error'
+        ]);
     }
-    $result = curl_exec($ch);
-    if (str_contains($result, "success")) {
+    /**
+     * 格式化响应结果
+     * bugscaner 推送响应参数说明
+     *  status     推送状态，不为1都是失败
+     *  remain_nbs 今天剩余的总额度条数
+     *  user_allnb 本次一共提交了
+     *  oknbs      本次推送成功条数
+     *  valide_nb  有效的网址条数
+     * baidu 推送响应参数说明
+     *  success	    成功推送的url条数
+     *  remain	    当天剩余的可推送url条数
+     *  not_same_site 由于不是本站url而未处理的url列表
+     *  not_valid     不合法的url列表
+     */
+    $result = json_decode($result,true);
+    // status不为1都是推送失败
+    if(data_get($result,'status',0) == 1){
+        $result = [
+            'success' => data_get($result,'oknbs'),
+            'remain'  => data_get($result,'remain_nbs'),
+            'not_same_site'  => [],
+            'not_valid'      => [],
+        ];
+    } else {
+        $result = [
+            'error'     => 401,
+            'message'   => 'baidu push error'
+        ];
+    }
+    $result = json_encode($result);
+
+    if (str_contains($result, " success")) {
         return "成功";
     }
-    Log::error('提交百度失败:' . $result);
     return $result;
 }
 

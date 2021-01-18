@@ -21,3 +21,21 @@ function parse_video($body)
     }
     return $body;
 }
+
+function rand_pick_ucdn_domain()
+{
+    $domains = ucdn_domains();
+    return $domains[array_rand($domains)];
+}
+
+function ucdn_domains()
+{
+    return [
+        'https://cdn-youku-com.diudie.com/',
+        'https://cdn-xigua-com.diudie.com/',
+        'https://cdn-iqiyi-com.diudie.com/',
+        'https://cdn-v-qq-com.diudie.com/',
+        'https://cdn-pptv-com.diudie.com/',
+        'https://cdn-leshi-com.diudie.com/',
+    ];
+}

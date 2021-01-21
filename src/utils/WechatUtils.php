@@ -391,7 +391,7 @@ class WechatUtils
         $hash   = hash_file('md5', $headimgurl);
         $path   = 'images/' . $hash . '.jpg';
         Storage::cloud()->put($path, $stream);
-        $user->avatar = Storage::cloud()->url($path);
+        $user->avatar = cdnurl($path);
         $user->save();
     }
 }

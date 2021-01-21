@@ -5,7 +5,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * 兼容cms模式的seo友好的https URL
+ * cms站群模式时的seo友好的https+根域名的URL
  */
 function seo_url($path)
 {

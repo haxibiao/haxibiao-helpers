@@ -2,7 +2,6 @@
 
 namespace Haxibiao\Helpers\utils;
 
-use App\Utils\VodUtils;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 

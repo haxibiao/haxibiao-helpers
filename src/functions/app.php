@@ -17,7 +17,7 @@ function getVodConfig(string $key)
  */
 function copyStubs($pwd, $force = false)
 {
-    //复制所有app stubs
+    //复制所有App stubs
     foreach (glob($pwd . '/stubs/*.stub') as $filepath) {
         $filename = basename($filepath);
         $dest     = app_path(str_replace(".stub", ".php", $filename));
@@ -25,7 +25,8 @@ function copyStubs($pwd, $force = false)
             copy($filepath, $dest);
         }
     }
-    //复制所有nova stubs
+
+    //复制所有Nova stubs
     if (!is_dir(app_path('Nova'))) {
         mkdir(app_path('Nova'));
     }
@@ -36,4 +37,28 @@ function copyStubs($pwd, $force = false)
             copy($filepath, $dest);
         }
     }
+
+    //复制所有GraphQL stubs
+    if (!is_dir(app_path('GraphQL/Directives'))) {
+        mkdir(app_path('GraphQL/Directives'), 0777, true);
+    }
+    if (!is_dir(app_path('GraphQL/Scalars'))) {
+        mkdir(app_path('GraphQL/Scalars'), 0777, true);
+    }
+
+    foreach (glob($pwd . '/stubs/GraphQL/Directives/*.stub') as $filepath) {
+        $filename = basename($filepath);
+        $dest     = app_path('GraphQL/Directives/' . str_replace(".stub", ".php", $filename));
+        if (!file_exists($dest) || $force) {
+            copy($filepath, $dest);
+        }
+    }
+    foreach (glob($pwd . '/stubs/GraphQL/Scalars/*.stub') as $filepath) {
+        $filename = basename($filepath);
+        $dest     = app_path('GraphQL/Scalars/' . str_replace(".stub", ".php", $filename));
+        if (!file_exists($dest) || $force) {
+            copy($filepath, $dest);
+        }
+    }
+
 }

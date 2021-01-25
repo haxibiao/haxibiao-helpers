@@ -40,17 +40,7 @@ class UcloudUtils
     public static function getCDNDomain($bucket)
     {
         $bucket = trim($bucket);
-        return data_get([
-            'hanju'      => 'https://cdn-youku-com.diudie.com/',
-            'riju'       => 'https://cdn-xigua-com.diudie.com/',
-            'meiju'      => 'https://cdn-iqiyi-com.diudie.com/',
-            'gangju'     => 'https://cdn-v-qq-com.diudie.com/',
-            'blgl'       => 'https://cdn-pptv-com.diudie.com/',
-            // 印剧数量少，使用 do spaces cdn domain
-            'yinju'      => 'https://yinju.sfo2.cdn.digitaloceanspaces.com/',
-            'othermovie' => 'https://cdn-leshi-com.diudie.com/',
-            'movieimage' => 'https://image-cdn.diudie.com/',
-        ], $bucket);
+        return data_get(space_ucdn_map(), $bucket);
     }
 
     public static function refreshCache($url)

@@ -2,13 +2,14 @@
 //视图层辅助函数
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 
 /**
- * 兼容cms模式的seo友好的https URL
+ * cms站群模式时的seo友好的https+根域名的URL
  */
 function seo_url($path)
 {
-    if (config('cms.multi_domains')) {
+    if (is_prod_env() && config('cms.multi_domains')) {
         $path = parse_url($path, PHP_URL_PATH);
         $path = ltrim($path, "\/");
         return "https://" . get_domain() . "/" . $path;
@@ -56,10 +57,10 @@ function tomorrow()
 
 function CacheTodayCount($key, $count)
 {
-    if (\Cache::has($key)) {
-        \Cache::increment($key, $count);
+    if (Cache::has($key)) {
+        Cache::increment($key, $count);
     } else {
-        \Cache::add($key, $count, tomorrow());
+        Cache::add($key, $count, tomorrow());
     }
 }
 

@@ -18,6 +18,22 @@ class FFMpegUtils
     {
     }
 
+
+    /**
+     * @param start 00:21:24.00 21分24秒 类似这种形式
+     * @param seconds 截取多少秒
+     * @param path 可以是本地path 或者是url
+     */
+    public static function M3u8ConvertIntoMp4($path, $start, $seconds, $savePath)
+    {
+        $localSavePath = storage_path('app/public/' . $savePath);
+        $command       = "ffmpeg -i {$path}  -acodec copy -vcodec copy -ss {$start} -t  $seconds  $localSavePath";
+        exec($command);
+        $fileid = VodUtils::Upload($localSavePath);
+        unlink($localSavePath);
+        return $fileid;
+    }
+
     /**
      * 获取视信息
      * @param $streamPath

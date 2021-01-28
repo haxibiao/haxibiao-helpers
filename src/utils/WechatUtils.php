@@ -3,12 +3,11 @@
 namespace Haxibiao\Helpers\utils;
 
 use App\Exceptions\UserException;
-use App\OAuth;
-use App\User;
-use App\Wallet;
 use GuzzleHttp\Client;
+use Haxibiao\Breeze\OAuth;
+use Haxibiao\Breeze\User;
 use haxibiao\helpers\utils\WechatMgUtils;
-
+use Haxibiao\Wallet\Wallet;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -210,10 +209,10 @@ class WechatUtils
                 'account'   => $user->account,
                 'unionid'   => $accessTokens['unionid'],
                 'openid'    => $accessTokens['openid'],
-            ]],200);
+            ]], 200);
         }
 
-        return successful_response($accessTokens,200);
+        return successful_response($accessTokens, 200);
     }
 
     /**
@@ -392,7 +391,7 @@ class WechatUtils
         $hash   = hash_file('md5', $headimgurl);
         $path   = 'images/' . $hash . '.jpg';
         Storage::cloud()->put($path, $stream);
-        $user->avatar = Storage::cloud()->url($path);
+        $user->avatar = cdnurl($path);
         $user->save();
     }
 }

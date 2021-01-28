@@ -3,6 +3,7 @@
 namespace Haxibiao\Helpers\utils;
 
 use QcloudApi;
+use Vod\Model\VodUploadRequest;
 
 /**
  * 腾讯VOD视频上传助手类
@@ -12,13 +13,25 @@ use QcloudApi;
  */
 class VodUtils
 {
+
+    public static function Upload($localFilePath)
+    {
+        $req                = new VodUploadRequest();
+        $req->ClassId       = config('vod.class_id');
+        $req->Procedure     = 'SimpleAesEncryptPreset';
+        $req->MediaFilePath = $localFilePath;
+        $rsp                = app('vodUpload')->upload("ap-guangzhou", $req);
+        $fileId             = $rsp->FileId;
+        return $fileId;
+    }
+
+
     private static function initVod()
     {
         $config = null;
 
         //在这里判断是为了兼容其他使用 App 使用了 vod 文件中 SecretId ，我并不确定其他项目的 .env 中是否设置了 SecretId
-        if(config('app.name') == 'ablm') 
-        {
+        if (config('app.name') == 'ablm') {
             $config = [
                 'SecretId'      => config('vod.ablm.secret_id'),
                 'SecretKey'     => config('vod.ablm.secret_key'),
@@ -32,7 +45,7 @@ class VodUtils
             ];
         }
 
-        
+
         return QcloudApi::load(QcloudApi::MODULE_VOD, $config);
     }
 

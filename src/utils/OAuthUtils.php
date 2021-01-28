@@ -2,12 +2,11 @@
 
 namespace Haxibiao\Helpers\utils;
 
-use App\Exceptions\UserException;
-use App\OAuth;
-use App\User;
-use App\Wallet;
-use App\Withdraw;
-use Exception;
+use Haxibiao\Breeze\Exceptions\UserException;
+use Haxibiao\Breeze\OAuth;
+use Haxibiao\Breeze\User;
+use Haxibiao\Wallet\Wallet;
+use Haxibiao\Wallet\Withdraw;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -60,7 +59,7 @@ class OAuthUtils
     {
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         $userInfo = self::userInfo($code);
-        $openId = Arr::get($userInfo, 'user_id');
+        $openId   = Arr::get($userInfo, 'user_id');
         throw_if(empty($openId), UserException::class, $userInfo['errorMsg'] ?? '授权失败,请稍后再试!');
 
         $oauth = OAuth::firstOrNew(['oauth_type' => 'alipay', 'oauth_id' => $openId]);
@@ -69,7 +68,7 @@ class OAuthUtils
 
         //更新OAuth绑定
         $oauth->user_id = $user->id;
-        $oauth->data = $userInfo;
+        $oauth->data    = $userInfo;
         $oauth->save();
 
         //更新钱包OPENID
@@ -87,19 +86,19 @@ class OAuthUtils
      */
     public static function userInfo($code)
     {
-        $userInfo = [];
+        $userInfo          = [];
         $_GET['auth_code'] = $code;
-        $config = [
-            'appId' => env('ALIPAY_AUTH_APP_ID', '2019112969489742'),
+        $config            = [
+            'appId'              => env('ALIPAY_AUTH_APP_ID', '2019112969489742'),
             'merchantPrivateKey' => file_get_contents(base_path('cert/alipay/auth/private_key')),
-            'alipayCertPath' => base_path('cert/alipay/auth/alipayCertPublicKey_RSA2.crt'),
+            'alipayCertPath'     => base_path('cert/alipay/auth/alipayCertPublicKey_RSA2.crt'),
             'alipayRootCertPath' => base_path('cert/alipay/auth/alipayRootCert.crt'),
-            'merchantCertPath' => base_path('cert/alipay/auth/appCertPublicKey.crt'),
+            'merchantCertPath'   => base_path('cert/alipay/auth/appCertPublicKey.crt'),
         ];
         try {
             error_reporting(E_ALL ^ E_DEPRECATED);
             $alipayUtils = AlipayUtils::config($config);
-            $userInfo = $alipayUtils->userInfo($code);
+            $userInfo    = $alipayUtils->userInfo($code);
         } catch (\Exception $ex) {
             $userInfo['errorMsg'] = $ex->getMessage();
         }

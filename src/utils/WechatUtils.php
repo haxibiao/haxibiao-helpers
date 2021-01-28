@@ -289,7 +289,11 @@ class WechatUtils
         }
 
         //同步wallet OpenId
-        $wallet          = Wallet::firstOrNew(['user_id' => $user->id]);
+        if (class_exists('\App\Wallet')) {
+            $wallet = \App\Wallet::firstOrNew(['user_id' => $user->id]);
+        } else {
+            $wallet = Wallet::firstOrNew(['user_id' => $user->id]);
+        }
         $wallet->open_id = $accessTokens['openid'];
         $wallet->save();
 
@@ -337,7 +341,6 @@ class WechatUtils
         //获取微信token
         $accessTokens = WechatUtils::getInstance()->userInfo($accessToken, $openId);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
-
 
         $oAuth = \App\OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']));
         throw_if($oAuth->user_id != $user->id, UserException::class, '绑定失败,该微信已绑定其他账户!');

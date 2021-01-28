@@ -255,7 +255,7 @@ class WechatUtils
      * @param [String] $code
      * @return OAuth
      */
-    public static function bindWechat(User $user, $unionId = null, $code = null, $version = 'v1')
+    public static function bindWechat($user, $unionId = null, $code = null, $version = 'v1')
     {
         //2.4.2之前版本用的微信登录接口
         if ($version == 'v1') {
@@ -332,7 +332,7 @@ class WechatUtils
         return $oAuth;
     }
 
-    public static function bindWechatWithToken(User $user, $accessToken, $openId)
+    public static function bindWechatWithToken($user, $accessToken, $openId)
     {
         //获取微信token
         $accessTokens = WechatUtils::getInstance()->userInfo($accessToken, $openId);

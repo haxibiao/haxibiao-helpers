@@ -35,22 +35,22 @@ class OAuthUtils
         return $oauth;
     }
 
-    public static function wechat(User $user, $code)
+    public static function wechat($user, $code)
     {
         return WeChatUtils::bindWechat($user, null, $code, 'v2');
     }
 
-    public static function alipay(User $user, $code)
+    public static function alipay($user, $code)
     {
         return self::bindAlipay($user, $code);
     }
 
-    public static function tiktok(User $user, $code)
+    public static function tiktok($user, $code)
     {
         return TikTokUtils::bindTikTok($user, $code);
     }
 
-    public static function getUserOauth(User $user, $oAuthType)
+    public static function getUserOauth($user, $oAuthType)
     {
         return OAuth::where(['oauth_type' => $oAuthType, 'user_id' => $user->id])->first();
     }

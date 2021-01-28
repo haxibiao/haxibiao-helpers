@@ -21,3 +21,42 @@ function parse_video($body)
     }
     return $body;
 }
+
+function rand_pick_ucdn_domain()
+{
+    $domains = ucdn_domains();
+    return $domains[array_rand($domains)];
+}
+
+function ucdn_domains()
+{
+    return [
+        'https://cdn-youku-com.diudie.com/',
+        'https://cdn-xigua-com.diudie.com/',
+        'https://cdn-iqiyi-com.diudie.com/',
+        'https://cdn-v-qq-com.diudie.com/',
+        'https://cdn-pptv-com.diudie.com/',
+        'https://cdn-leshi-com.diudie.com/',
+    ];
+}
+
+function get_space_by_ucdn($ucdn_root)
+{
+    $map = array_flip(space_ucdn_map());
+    return $map[$ucdn_root] ?? '';
+}
+
+function space_ucdn_map()
+{
+    return [
+        'hanju'      => 'https://cdn-youku-com.diudie.com/',
+        'riju'       => 'https://cdn-xigua-com.diudie.com/',
+        'meiju'      => 'https://cdn-iqiyi-com.diudie.com/',
+        'gangju'     => 'https://cdn-v-qq-com.diudie.com/',
+        'blgl'       => 'https://cdn-pptv-com.diudie.com/',
+        // 印剧数量少，使用 do spaces cdn domain
+        'yinju'      => 'https://yinju.sfo2.cdn.digitaloceanspaces.com/',
+        'othermovie' => 'https://cdn-leshi-com.diudie.com/',
+        'movieimage' => 'https://image-cdn.diudie.com/',
+    ];
+}

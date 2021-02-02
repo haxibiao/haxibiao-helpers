@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 function randomDate($begintime, $endtime = "", $is = true)
 {
@@ -58,7 +57,7 @@ function numberToReadable($number, $precision = 1, $divisors = null)
 function get_apk_link($version = "")
 {
     $app = 'datizhuanqian';
-    if (str_contains(env('APP_DOMAIN'), 'damei')) {
+    if (str_contains(env('APP_DOMAIN', ''), 'damei')) {
         $app = 'damei';
     }
     $env = env('APP_ENV');
@@ -467,44 +466,44 @@ function pushSeoUrl($urls, $api)
  * @param string $domain
  * @return string
  */
-function push_baidu($urls, $token, $domain,$proxy=null)
+function push_baidu($urls, $token, $domain, $proxy = null)
 {
     // 格式化FormData
-    $urls = array_map(function ($url){
+    $urls = array_map(function ($url) {
         return urlencode($url);
-    },$urls);
-    $urls = implode('%0A',$urls);
+    }, $urls);
+    $urls = implode('%0A', $urls);
 
     $firstPartOfParamer = http_build_query([
-        'host' => $domain,
+        'host'  => $domain,
         'token' => $token,
     ]);
-    $paramers = $firstPartOfParamer.'&urls='.$urls;
+    $paramers = $firstPartOfParamer . '&urls=' . $urls;
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'http://tools.bugscaner.com/api/urltobaidu',
+        CURLOPT_URL            => 'http://tools.bugscaner.com/api/urltobaidu',
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 5,
+        CURLOPT_ENCODING       => '',
+        CURLOPT_MAXREDIRS      => 10,
+        CURLOPT_TIMEOUT        => 5,
         CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => $paramers,
-        CURLOPT_HTTPHEADER => array(
+        CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST  => 'POST',
+        CURLOPT_POSTFIELDS     => $paramers,
+        CURLOPT_HTTPHEADER     => array(
             'Referer: http://tools.bugscaner.com/urltobaidu',
-            'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'
+            'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36',
         ),
     ));
 
     $result = curl_exec($curl);
     curl_close($curl);
 
-    if(!$result){
+    if (!$result) {
         return json_encode([
-            'error'     => 401,
-            'message'   => 'baidu push error'
+            'error'   => 401,
+            'message' => 'baidu push error',
         ]);
     }
     /**
@@ -516,24 +515,24 @@ function push_baidu($urls, $token, $domain,$proxy=null)
      *  oknbs      本次推送成功条数
      *  valide_nb  有效的网址条数
      * baidu 推送响应参数说明
-     *  success	    成功推送的url条数
-     *  remain	    当天剩余的可推送url条数
+     *  success        成功推送的url条数
+     *  remain        当天剩余的可推送url条数
      *  not_same_site 由于不是本站url而未处理的url列表
      *  not_valid     不合法的url列表
      */
-    $result = json_decode($result,true);
+    $result = json_decode($result, true);
     // status不为1都是推送失败
-    if(data_get($result,'status',0) == 1){
+    if (data_get($result, 'status', 0) == 1) {
         $result = [
-            'success' => data_get($result,'oknbs'),
-            'remain'  => data_get($result,'remain_nbs'),
-            'not_same_site'  => [],
-            'not_valid'      => [],
+            'success'       => data_get($result, 'oknbs'),
+            'remain'        => data_get($result, 'remain_nbs'),
+            'not_same_site' => [],
+            'not_valid'     => [],
         ];
     } else {
         $result = [
-            'error'     => 401,
-            'message'   => 'baidu push error'
+            'error'   => 401,
+            'message' => 'baidu push error',
         ];
     }
     $result = json_encode($result);
@@ -576,18 +575,19 @@ function randFloat($min = 0, $max = 1)
     return floatval(number_format($rand, 2));
 }
 
-function get_allfiles($path,&$files) {
-    if(is_dir($path)){
+function get_allfiles($path, &$files)
+{
+    if (is_dir($path)) {
         $dp = dir($path);
-        while ($file = $dp ->read()){
-            if($file !="." && $file !=".."){
-                get_allfiles($path."/".$file, $files);
+        while ($file = $dp->read()) {
+            if ($file != "." && $file != "..") {
+                get_allfiles($path . "/" . $file, $files);
             }
         }
-        $dp ->close();
+        $dp->close();
     }
-    if(is_file($path)){
-        $files[] =  $path;
+    if (is_file($path)) {
+        $files[] = $path;
     }
 }
 
@@ -595,16 +595,16 @@ function register_routes($path)
 {
     $is_testing = false;
     try {
-        $phpunit = simplexml_load_file('phpunit.xml');
+        $phpunit    = simplexml_load_file('phpunit.xml');
         $is_testing = !app()->environment('prod');
     } catch (Exception $ex) {
     }
     $files = [];
-    get_allfiles($path,$files);
-    foreach($files as $apiFile){
-        if($is_testing){
-    require $apiFile;
-        }else{
+    get_allfiles($path, $files);
+    foreach ($files as $apiFile) {
+        if ($is_testing) {
+            require $apiFile;
+        } else {
             require_once $apiFile;
         }
     }

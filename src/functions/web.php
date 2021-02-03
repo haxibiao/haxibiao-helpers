@@ -30,6 +30,15 @@ function cdnurl($path)
     return "https://" . env('COS_DOMAIN') . $path;
 }
 
+function returnData($data = null, $message = null, $statusCode = 200)
+{
+    return [
+        'data'        => $data,
+        'message'     => $message,
+        'status_code' => $statusCode,
+    ];
+}
+
 /**
  * 获取文件大小信息
  * @param $bytes

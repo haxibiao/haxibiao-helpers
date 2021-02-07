@@ -575,22 +575,6 @@ function randFloat($min = 0, $max = 1)
     return floatval(number_format($rand, 2));
 }
 
-function get_allfiles($path, &$files)
-{
-    if (is_dir($path)) {
-        $dp = dir($path);
-        while ($file = $dp->read()) {
-            if ($file != "." && $file != "..") {
-                get_allfiles($path . "/" . $file, $files);
-            }
-        }
-        $dp->close();
-    }
-    if (is_file($path)) {
-        $files[] = $path;
-    }
-}
-
 function register_routes($path)
 {
     $is_testing = false;

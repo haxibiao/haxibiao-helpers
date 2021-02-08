@@ -116,6 +116,11 @@ function is_hotfix_env()
     return app()->environment('hotfix');
 }
 
+function is_www_env()
+{
+    return app()->environment('www');
+}
+
 function is_local_env()
 {
     return app()->environment('local');

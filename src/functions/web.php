@@ -25,8 +25,17 @@ function processVideo($video)
  */
 function cdnurl($path)
 {
+    //兼容path
     $path = "/" . $path;
     $path = str_replace('//', '/', $path);
+
+    //兼容未配置COS_DOMAIN的filesystem cloud配置
+    if (blank(env('COS_DOMAIN'))) {
+        if (Storage::cloud()->exists($path)) {
+            return Storage::cloud()->url($path);
+        }
+    }
+
     return "https://" . env('COS_DOMAIN') . $path;
 }
 
@@ -54,7 +63,7 @@ function formatSizeUnits($bytes)
         $bytes = number_format($bytes / 1024, 2) . ' KB';
     } elseif ($bytes > 1) {
         $bytes = $bytes . ' MB';
-    } elseif ($bytes == 1) {
+    } elseif (1 == $bytes) {
         $bytes = $bytes . ' byte';
     } else {
         $bytes = '0 bytes';
@@ -118,7 +127,7 @@ function isPhone()
 function get_active_css($path, $full_match = 0)
 {
     $active = '';
-    if (Request::path() == '/' && $path == '/') {
+    if (Request::path() == '/' && '/' == $path) {
         $active = 'active';
     } else if (starts_with(Request::path(), $path)) {
         $active = 'active';
@@ -355,7 +364,7 @@ function get_referer()
 {
     $referer = request()->header('referer') ?? request()->get('referer', 'unknown');
     //官方正式版也标注渠道为 APK
-    if ($referer == 'null' || $referer == 'undefined') {
+    if ('null' == $referer || 'undefined' == $referer) {
         $referer = 'unknown';
     }
     return $referer;
@@ -461,7 +470,7 @@ function get_domain()
         //需要seo seed proxy_domains
         if ($seos = app('seos')) {
             foreach ($seos as $seo) {
-                if ($seo->group == 'proxy_domains') {
+                if ('proxy_domains' == $seo->group) {
                     if ($seo->value == $sub_domain) {
                         return $seo->name;
                     }

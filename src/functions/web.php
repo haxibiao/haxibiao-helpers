@@ -362,9 +362,10 @@ function is_giql()
  */
 function get_referer()
 {
-    $referer = request()->header('referer') ?? request()->get('referer', 'unknown');
+    $referer = (request()->header('referer') ?? request()->get('referer')) ??
+        (request()->header('referrer') ?? request()->get('referrer'));
     //官方正式版也标注渠道为 APK
-    if ('null' == $referer || 'undefined' == $referer) {
+    if (empty($referer) || $referer == 'null' || $referer == 'undefined') {
         $referer = 'unknown';
     }
     return $referer;

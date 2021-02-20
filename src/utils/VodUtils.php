@@ -3,6 +3,12 @@
 namespace Haxibiao\Helpers\utils;
 
 use QcloudApi;
+use TencentCloud\Common\Credential;
+use TencentCloud\Common\Profile\ClientProfile;
+use TencentCloud\Common\Profile\HttpProfile;
+use TencentCloud\Vod\V20180717\Models\PullUploadRequest;
+use TencentCloud\Vod\V20180717\Models\PushUrlCacheRequest;
+use TencentCloud\Vod\V20180717\VodClient;
 use Vod\Model\VodUploadRequest;
 
 /**
@@ -25,6 +31,50 @@ class VodUtils
         return $fileId;
     }
 
+    /**
+     * VOD视频资源预热
+     */
+    public static function pushUrlCacheWithVODUrl($url)
+    {
+        //VOD预热
+        $cred        = new Credential(config('vod.secret_id'), config('vod.secret_key'));
+        $httpProfile = new HttpProfile();
+        $httpProfile->setEndpoint("vod.tencentcloudapi.com");
+
+        $clientProfile = new ClientProfile();
+        $clientProfile->setHttpProfile($httpProfile);
+
+        $client = new VodClient($cred, "ap-guangzhou", $clientProfile);
+        $req    = new PushUrlCacheRequest();
+        $params = '{"Urls":["' . $url . '"]}';
+
+        $req->fromJsonString($params);
+        $resp = $client->PushUrlCache($req);
+
+        return $resp->toJsonString();
+    }
+
+    public static function PullUpload($url)
+    {
+        try {
+            $cred        = new Credential(config('vod.secret_id'), config('vod.secret_key'));
+            $httpProfile = new HttpProfile();
+            $httpProfile->setEndpoint("vod.tencentcloudapi.com");
+            $clientProfile = new ClientProfile();
+            $clientProfile->setHttpProfile($httpProfile);
+            $client = new VodClient($cred, "", $clientProfile);
+            $req    = new PullUploadRequest();
+            $params = array(
+                "MediaUrl" => $url,
+                "ClassId"  => config('vod.class_id'),
+            );
+            $req->fromJsonString(json_encode($params));
+            $resp = $client->PullUpload($req);
+            return $resp->toJsonString();
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
 
     private static function initVod()
     {
@@ -45,7 +95,6 @@ class VodUtils
             ];
         }
 
-
         return QcloudApi::load(QcloudApi::MODULE_VOD, $config);
     }
 
@@ -60,8 +109,8 @@ class VodUtils
             if ($response == false) {
                 $error = $vod->getError();
                 echo "$apiAction failed, code: " . $error->getCode() .
-                    ", message: " . $error->getMessage() .
-                    "ext: " . var_export($error->getExt(), true) . "\n";
+                ", message: " . $error->getMessage() .
+                "ext: " . var_export($error->getExt(), true) . "\n";
                 continue;
             } else {
                 return $response;

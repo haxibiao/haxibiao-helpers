@@ -598,3 +598,8 @@ function register_routes($path)
         }
     }
 }
+
+function is_cli()
+{
+    return preg_match("/cli/i", php_sapi_name());
+}

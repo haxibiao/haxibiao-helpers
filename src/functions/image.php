@@ -61,20 +61,17 @@ function matchBase64($source)
 
 function parse_image($body, $environment = null)
 {
-    //检测本地或GQL没图的时候取线上的
-    $environment = $environment ?: is_local_env();
-
-    if ($environment) {
-        $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
-        preg_match_all($pattern_img, $body, $matches);
-        $imgs = $matches[2];
-        foreach ($imgs as $img) {
-            $image = \App\Image::where('path', $img)->first();
-            if ($image) {
-                $body = str_replace($img, $image->url, $body);
-            }
+    //任何环境，都取image->url的cdn地址，没有的修复cdn图片！
+    $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
+    preg_match_all($pattern_img, $body, $matches);
+    $imgs = $matches[2];
+    foreach ($imgs as $img) {
+        $image = \App\Image::where('path', parse_url($img, PHP_URL_PATH))->first();
+        if ($image) {
+            $body = str_replace($img, $image->url, $body);
         }
     }
+
     return $body;
 }
 

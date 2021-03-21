@@ -3,6 +3,7 @@
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 /**
  * cms站群模式时的seo友好的https+根域名的URL
@@ -111,4 +112,36 @@ function cn2num($string)
         '两' => 2,
     );
     return $num+@$d[$string];
+}
+
+/**
+ * 尊重manifestPath实现版本更新的mix函数
+ *
+ * @param string $path 资源路径
+ * @param string $manifestPath 必传,需要realPath
+ * @return string
+ */
+function breeze_mix($path, $manifestPath)
+{
+    $manifests = [];
+    if (blank($manifestPath)) {
+        throw new Exception('The Mix manifest path for breeze does not exist.');
+    }
+    if (!is_file($manifestPath)) {
+        throw new Exception('The Mix manifest does not exist.');
+    }
+    $manifest = json_decode(file_get_contents($manifestPath), true);
+    if (!Str::startsWith($path, '/')) {
+        $path = "/" . $path;
+    }
+    if (!isset($manifest[$path])) {
+        $exception = new Exception("Unable to locate Mix file: {$path}.");
+        if (!app('config')->get('app.debug')) {
+            report($exception);
+            return $path;
+        } else {
+            throw $exception;
+        }
+    }
+    return $manifest[$path];
 }

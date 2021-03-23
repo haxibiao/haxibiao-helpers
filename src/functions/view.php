@@ -115,33 +115,43 @@ function cn2num($string)
 }
 
 /**
+ * breeze的mix, 优先尊重app public path 下的mix-manifest.json
+ */
+function breeze_mix($path)
+{
+
+    $manifestPaths = [base_path('public/mix-manifest.json'), breeze_path('public/mix-manifest.json'), media_path('public/mix-manifest.json')];
+    return resolve_mix_version_path($path, $manifestPaths);
+}
+
+/**
  * 尊重manifestPath实现版本更新的mix函数
  *
  * @param string $path 资源路径
- * @param string $manifestPath 必传,需要realPath
+ * @param array $manifestPaths
  * @return string
  */
-function breeze_mix($path, $manifestPath)
+function resolve_mix_version_path($path, $manifestPaths)
 {
-    $manifests = [];
-    if (blank($manifestPath)) {
-        throw new Exception('The Mix manifest path for breeze does not exist.');
-    }
-    if (!is_file($manifestPath)) {
-        throw new Exception('The Mix manifest does not exist.');
-    }
-    $manifest = json_decode(file_get_contents($manifestPath), true);
     if (!Str::startsWith($path, '/')) {
         $path = "/" . $path;
     }
-    if (!isset($manifest[$path])) {
-        $exception = new Exception("Unable to locate Mix file: {$path}.");
-        if (!app('config')->get('app.debug')) {
-            report($exception);
-            return $path;
-        } else {
-            throw $exception;
+
+    //逐步manifest匹配path
+    foreach ($manifestPaths as $manifestPath) {
+        if (is_file($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+            if (isset($manifest[$path])) {
+                return $manifest[$path];
+            }
         }
     }
-    return $manifest[$path];
+
+    $exception = new Exception("Unable to locate Breeze Mix file: {$path}.");
+    if (!app('config')->get('app.debug')) {
+        report($exception);
+        return $path;
+    } else {
+        throw $exception;
+    }
 }

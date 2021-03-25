@@ -60,3 +60,16 @@ function space_ucdn_map()
         'movieimage' => 'https://image-cdn.diudie.com/',
     ];
 }
+
+//根据视频地址获取时长duration
+function getDuration($uri)
+{
+    try {
+        $res = file_get_contents($uri);
+    } catch (\ErrorException $e) {
+        return 0;
+    }
+    preg_match_all('/\d+[.]\d+/', $res, $arr);
+    $res = array_sum($arr[0]);
+    return (int) $res;
+}

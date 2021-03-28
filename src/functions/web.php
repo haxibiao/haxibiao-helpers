@@ -29,7 +29,12 @@ function cdnurl($path)
     $path = "/" . $path;
     $path = str_replace('//', '/', $path);
 
-    //兼容未配置COS_DOMAIN的filesystem cloud配置
+    //兼容图片还在本地storage的，暗示该项目需要清理storage,并同步到cloud
+    if (file_exists(public_path($path))) {
+        return url($path);
+    }
+
+    //兼容env未配置COS_DOMAIN的
     if (blank(env('COS_DOMAIN'))) {
         if (Storage::cloud()->exists($path)) {
             return Storage::cloud()->url($path);

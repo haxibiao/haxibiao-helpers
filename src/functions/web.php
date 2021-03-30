@@ -1,10 +1,15 @@
 <?php
 
+use Haxibiao\Helpers\utils\HttpUtils;
 use Haxibiao\Helpers\utils\QcloudUtils;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
 use Jenssegers\Agent\Facades\Agent;
+
+function is_crawler(){
+	return HttpUtils::isCrawler();
+}
 
 //FIXME: 需要重构到 haxibiao-media
 /**

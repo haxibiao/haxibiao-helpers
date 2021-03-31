@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
 use Jenssegers\Agent\Facades\Agent;
 
-function is_crawler(){
-	return HttpUtils::isCrawler();
+function is_crawler()
+{
+    return HttpUtils::isCrawler();
 }
 
 //FIXME: 需要重构到 haxibiao-media
@@ -440,7 +441,7 @@ function getLatestAppVersion()
  *
  * @return string
  */
-function get_sub_domain($sub = false)
+function get_sub_domain($sub = true)
 {
     $host = request()->getHost();
     //兼容本地开发域名配置习惯
@@ -475,15 +476,17 @@ function get_domain()
     $host       = request()->getHost();
     $host_parts = explode('.', $host);
 
-    //站群-未备案域名跳板回国内机房情况
+    //站群， 且未备案域名跳板回国内机房, 使用二级备案域名的情况
     if (config('cms.multi_domains') && count($host_parts) >= 3) {
         $sub_domain = get_sub_domain(true);
-        //需要seo seed proxy_domains
+        //需要seo配置里提前seed好这样使用代理二级域名的seo顶级域名
         if ($seos = app('seos')) {
             foreach ($seos as $seo) {
+                //实例参考 SeoSeeder
                 if ('proxy_domains' == $seo->group) {
+                    //匹配当前请求proxy过来的二级备案域名
                     if ($seo->value == $sub_domain) {
-                        return $seo->name;
+                        return $seo->name; //最后返回seo用的顶级域名
                     }
                 }
             }

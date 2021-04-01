@@ -2,8 +2,40 @@
 //视图层辅助函数
 
 use GuzzleHttp\Client;
+use Haxibiao\Breeze\Breeze;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+
+/**
+ * 加载 个breeze模块 下 views 依赖的 css js images
+ */
+function load_breeze_assets($public_path)
+{
+    foreach (glob($public_path . '/css/*') as $filepath) {
+        $asset_path = str_replace($public_path, '', $filepath);
+        Breeze::asset($asset_path, $filepath);
+    }
+
+    foreach (glob($public_path . '/js/*') as $filepath) {
+        $asset_path = str_replace($public_path, '', $filepath);
+        Breeze::asset($asset_path, $filepath);
+    }
+
+    foreach (glob($public_path . '/images/*') as $filepath) {
+        $asset_path = str_replace($public_path, '', $filepath);
+        Breeze::asset($asset_path, $filepath);
+    }
+
+    foreach (glob($public_path . '/images/app/*') as $filepath) {
+        $asset_path = str_replace($public_path, '', $filepath);
+        Breeze::asset($asset_path, $filepath);
+    }
+
+    foreach (glob($public_path . '/images/logo/*') as $filepath) {
+        $asset_path = str_replace($public_path, '', $filepath);
+        Breeze::asset($asset_path, $filepath);
+    }
+}
 
 /**
  * cms站群模式时的seo友好的https+根域名的URL

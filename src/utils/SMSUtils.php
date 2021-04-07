@@ -163,6 +163,10 @@ class SMSUtils
                 'aliyun' => null,
                 'qcloud' => '668141',
             ],
+            'EXCEPTION_LOG'          => [
+                'aliyun' => null,
+                'qcloud' => '915190',
+            ],
             'NOVA_NEW_USER_WITHDRAW' => [
                 'aliyun' => null,
                 'qcloud' => '606303',

@@ -23,6 +23,10 @@ function str_purify($string) {
 	$string = str_replace("\r", '', $string);    // --- replace with empty space
 	$string = str_replace("\n", ' ', $string);   // --- replace with space
 	$string = str_replace("\t", ' ', $string);   // --- replace with space
+	$string = str_replace("&lt;", '<', $string);
+	$string = str_replace("&gt;", '>', $string);
+	$string = str_replace("&amp;", '&', $string);
+	$string = str_replace("&nbsp;", ' ', $string);
 
 	// ----- remove multiple spaces -----
 	$string = trim(preg_replace('/ {2,}/', ' ', $string));

@@ -5,6 +5,7 @@ use Haxibiao\Helpers\utils\QcloudUtils;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Storage;
 use Jenssegers\Agent\Facades\Agent;
 
 function is_crawler()

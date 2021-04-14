@@ -26,6 +26,11 @@ function load_breeze_assets($public_path)
         Breeze::asset($asset_path, $filepath);
     }
 
+    foreach (glob($public_path . '/images/movie/*') as $filepath) {
+        $asset_path = str_replace($public_path, '', $filepath);
+        Breeze::asset($asset_path, $filepath);
+    }
+
     foreach (glob($public_path . '/images/app/*') as $filepath) {
         $asset_path = str_replace($public_path, '', $filepath);
         Breeze::asset($asset_path, $filepath);
@@ -69,7 +74,7 @@ function getUrlContent($url)
             'content'    => $resp->getBody()->getContents(),
             'statusCode' => $statusCode,
         ];
-    } catch (\Exception $th) {
+    } catch (\Exception$th) {
         return [
             'content'    => null,
             'statusCode' => 404,

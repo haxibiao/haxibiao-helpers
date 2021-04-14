@@ -252,9 +252,12 @@ function match_str($str)
     return true;
 }
 
-function match($str)
-{
-    return true;
+// function match 完全不兼容php 8
+if (!function_exists('matched')) {
+    function matched($str)
+    {
+        return true;
+    }
 }
 
 function get_top_nav_bg()
@@ -528,7 +531,7 @@ function hasBadWords($text)
     try {
         $badWords      = file_get_contents(base_path('filter-question-keywords.json'));
         $badWordsArray = json_decode($badWords, true);
-    } catch (\Exception $ex) {
+    } catch (\Exception$ex) {
         return false;
     }
 

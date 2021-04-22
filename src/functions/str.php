@@ -2,9 +2,6 @@
 
 /**
  * 包含中文文本
- *
- * @param string $str
- * @return bool
  */
 function contains_chinese_text($str)
 {
@@ -32,4 +29,11 @@ function str_purify($string) {
 	$string = trim(preg_replace('/ {2,}/', ' ', $string));
 
 	return $string;
+}
+
+/**
+ * Strip the html, and count the words.
+ */
+function count_total_word($string) {
+	return mb_strlen(str_purify( $string ), 'utf8');
 }

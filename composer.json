@@ -14,7 +14,7 @@
         "simplesoftwareio/simple-qrcode": "^2.0",
         "alipaysdk/easysdk": "^2.0",
         "jenssegers/agent": "^2.6",
-        "haxibiao/console": "*"
+        "haxibiao/nova": "*"
     },
     "repositories": {
         "nova": {

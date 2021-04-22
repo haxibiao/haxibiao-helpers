@@ -580,25 +580,6 @@ function randFloat($min = 0, $max = 1)
     return floatval(number_format($rand, 2));
 }
 
-function register_routes($path)
-{
-    $is_testing = false;
-    try {
-        $phpunit    = simplexml_load_file('phpunit.xml');
-        $is_testing = !app()->environment('prod');
-    } catch (Exception $ex) {
-    }
-    $files = [];
-    get_allfiles($path, $files);
-    foreach ($files as $apiFile) {
-        if ($is_testing) {
-            require $apiFile;
-        } else {
-            require_once $apiFile;
-        }
-    }
-}
-
 function is_cli()
 {
     return preg_match("/cli/i", php_sapi_name());

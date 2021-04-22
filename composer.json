@@ -13,14 +13,7 @@
         "laravel/helpers": "^1.2",
         "simplesoftwareio/simple-qrcode": "^2.0",
         "alipaysdk/easysdk": "^2.0",
-        "jenssegers/agent": "^2.6",
-        "haxibiao/nova": "*"
-    },
-    "repositories": {
-        "nova": {
-            "type": "vcs",
-            "url": "http://code.haxibiao.cn/web/nova.git"
-        }
+        "jenssegers/agent": "^2.6"
     },
     "minimum-stability": "dev",
     "autoload": {

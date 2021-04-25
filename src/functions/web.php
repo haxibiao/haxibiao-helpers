@@ -5,7 +5,6 @@ use Haxibiao\Helpers\utils\QcloudUtils;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Storage;
 use Jenssegers\Agent\Facades\Agent;
 
 function is_crawler()
@@ -41,14 +40,19 @@ function cdnurl($path)
         return url($path);
     }
 
-    //兼容env未配置COS_DOMAIN的
-    if (blank(env('COS_DOMAIN'))) {
-        if (Storage::cloud()->exists($path)) {
-            return Storage::cloud()->url($path);
-        }
-    }
+    return "https://" . cdn_domain() . $path;
+}
 
-    return "https://" . env('COS_DOMAIN') . $path;
+function cdn_domain()
+{
+    $cdn_domain = env('COS_DOMAIN');
+    if (config('filesystems.cloud') == 'space') {
+        $cdn_domain = env('SPACE_DOMAIN');
+    }
+    if (blank($cdn_domain)) {
+        $cdn_domain = env('APP_DOMAIN');
+    }
+    return $cdn_domain;
 }
 
 function returnData($data = null, $message = null, $statusCode = 200)
@@ -532,7 +536,7 @@ function hasBadWords($text)
     try {
         $badWords      = file_get_contents(base_path('filter-question-keywords.json'));
         $badWordsArray = json_decode($badWords, true);
-    } catch (\Exception$ex) {
+    } catch (\Exception $ex) {
         return false;
     }
 

@@ -343,7 +343,7 @@ function hide_phone($str)
     return substr_replace($str, '****', 3, 4);
 }
 
-function genrate_uuid($suffix = '')
+function generate_uuid($suffix = '')
 {
     return date('YmdHis') . uniqid() . '.' . $suffix;
 }

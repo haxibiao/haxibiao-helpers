@@ -20,9 +20,9 @@ function processVideo($video)
 {
     $video->syncVodProcessResult();
     //如果还没有截图 就重新执行调用截图接口
-    if (!$video->cover && !empty($video->qcvod_fileid)) {
+    if (!$video->cover && !empty($video->fileid)) {
         $duration = $video->duration > 9 ? 9 : $video->duration;
-        QcloudUtils::makeCoverAndSnapshots($video->qcvod_fileid, $duration);
+        QcloudUtils::makeCoverAndSnapshots($video->fileid, $duration);
     }
 }
 

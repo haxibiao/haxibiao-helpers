@@ -584,3 +584,18 @@ function is_cli()
 {
     return preg_match("/cli/i", php_sapi_name());
 }
+
+function haveEmoji($str)
+{
+    $mbLen = mb_strlen($str);
+
+    $strArr = [];
+    for ($i = 0; $i < $mbLen; $i++) {
+        $strArr[] = mb_substr($str, $i, 1, 'utf-8');
+        if (strlen($strArr[$i]) >= 4) {
+            return true;
+        }
+    }
+
+    return false;
+}

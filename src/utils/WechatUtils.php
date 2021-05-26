@@ -318,7 +318,7 @@ class WechatUtils
         return $oAuth;
     }
 
-    public static function bindWechatWithCode(User $user, $code)
+    public static function bindWechatWithCode($user, $code)
     {
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         //获取微信token

@@ -207,7 +207,7 @@ class WechatUtils
                 'id'        => $user->id,
                 'api_token' => $user->api_token,
                 'account'   => $user->account,
-                'unionid'   => $accessTokens['unionid'],
+                // 'unionid'   => $accessTokens['unionid'],
                 'openid'    => $accessTokens['openid'],
             ]], 200);
         }

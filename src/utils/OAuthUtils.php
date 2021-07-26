@@ -20,7 +20,7 @@ class OAuthUtils
         throw_if(is_null($oauth), UserException::class, '授权失败,该账户未绑定!');
 
         if ($type == 'wechat') {
-            return WeChatUtils::signInOAuth($code);
+            return WechatUtils::signInOAuth($code);
         }
     }
 
@@ -36,7 +36,7 @@ class OAuthUtils
 
     public static function wechat($user, $code, $platform = '')
     {
-        return WeChatUtils::bindWechat($user, null, $code, 'v2', $platform);
+        return WechatUtils::bindWechat($user, null, $code, 'v2', $platform);
     }
 
     public static function alipay($user, $code, $platform = '')

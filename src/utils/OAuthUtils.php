@@ -24,7 +24,7 @@ class OAuthUtils
         }
     }
 
-    public static function bind($user, $code, $type, $platform)
+    public static function bind($user, $code, $type, $platform = '')
     {
         // $brand = OAuth::typeTranslator($type);
         throw_if(self::getUserOauth($user, $type), UserException::class, '您已绑定成功,请直接登录!');
@@ -34,12 +34,12 @@ class OAuthUtils
         return $oauth;
     }
 
-    public static function wechat($user, $code, $platform)
+    public static function wechat($user, $code, $platform = '')
     {
         return WeChatUtils::bindWechat($user, null, $code, 'v2', $platform);
     }
 
-    public static function alipay($user, $code, $platform)
+    public static function alipay($user, $code, $platform = '')
     {
         return self::bindAlipay($user, $code, $platform);
     }
@@ -54,7 +54,7 @@ class OAuthUtils
         return OAuth::where(['oauth_type' => $oAuthType, 'user_id' => $user->id])->first();
     }
 
-    public static function bindAlipay($user, $code, $platform)
+    public static function bindAlipay($user, $code, $platform = '')
     {
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         $userInfo = self::userInfo($code, $platform);

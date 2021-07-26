@@ -4,7 +4,6 @@ namespace Haxibiao\Helpers\utils;
 
 use Haxibiao\Breeze\Exceptions\UserException;
 use Haxibiao\Breeze\OAuth;
-use Haxibiao\Breeze\User;
 use Haxibiao\Wallet\Wallet;
 use Haxibiao\Wallet\Withdraw;
 use Illuminate\Support\Arr;
@@ -25,24 +24,24 @@ class OAuthUtils
         }
     }
 
-    public static function bind($user, $code, $type)
+    public static function bind($user, $code, $type, $platform)
     {
         // $brand = OAuth::typeTranslator($type);
         throw_if(self::getUserOauth($user, $type), UserException::class, '您已绑定成功,请直接登录!');
         throw_if(!method_exists(self::class, $type), UserException::class, '绑定失败,该授权方式不存在!');
 
-        $oauth = self::$type($user, $code);
+        $oauth = self::$type($user, $code, $platform);
         return $oauth;
     }
 
-    public static function wechat($user, $code)
+    public static function wechat($user, $code, $platform)
     {
-        return WeChatUtils::bindWechat($user, null, $code, 'v2');
+        return WeChatUtils::bindWechat($user, null, $code, 'v2', $platform);
     }
 
-    public static function alipay($user, $code)
+    public static function alipay($user, $code, $platform)
     {
-        return self::bindAlipay($user, $code);
+        return self::bindAlipay($user, $code, $platform);
     }
 
     public static function tiktok($user, $code)
@@ -55,10 +54,10 @@ class OAuthUtils
         return OAuth::where(['oauth_type' => $oAuthType, 'user_id' => $user->id])->first();
     }
 
-    public static function bindAlipay($user, $code)
+    public static function bindAlipay($user, $code, $platform)
     {
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
-        $userInfo = self::userInfo($code);
+        $userInfo = self::userInfo($code, $platform);
         $openId   = Arr::get($userInfo, 'user_id');
         throw_if(empty($openId), UserException::class, $userInfo['errorMsg'] ?? '授权失败,请稍后再试!');
 
@@ -84,7 +83,7 @@ class OAuthUtils
     /**
      * @param $code alipay sdk授权码
      */
-    public static function userInfo($code)
+    public static function userInfo($code, $platform = 'dazhuan')
     {
         $userInfo          = [];
         $_GET['auth_code'] = $code;
@@ -95,6 +94,17 @@ class OAuthUtils
             'alipayRootCertPath' => base_path('cert/alipay/auth/alipayRootCert.crt'),
             'merchantCertPath'   => base_path('cert/alipay/auth/appCertPublicKey.crt'),
         ];
+
+        //华为包，使用com.datichuangguan包名
+        if ($platform == 'DTCG') {
+            $config = [
+                'appId'              => env('ALIPAY_AUTH_APP_ID_DTCG'),
+                'merchantPrivateKey' => file_get_contents(base_path('cert/alipay_dtcg/auth/private_key')),
+                'alipayCertPath'     => base_path('cert/alipay_dtcg/auth/alipayCertPublicKey_RSA2.crt'),
+                'alipayRootCertPath' => base_path('cert/alipay_dtcg/auth/alipayRootCert.crt'),
+                'merchantCertPath'   => base_path('cert/alipay_dtcg/auth/appCertPublicKey.crt'),
+            ];
+        }
         try {
             error_reporting(E_ALL ^ E_DEPRECATED);
             $alipayUtils = AlipayUtils::config($config);

@@ -137,6 +137,11 @@ class WechatUtils
             $appid  = Arr::get($this->config, 'tiantianchuti.appid');
             $secret = Arr::get($this->config, 'tiantianchuti.secret');
         }
+        //华为包，使用com.datichuangguan包名
+        if ($platform == "DTCG") {
+            $appid  = Arr::get($this->config, 'datichuangguan.appid');
+            $secret = Arr::get($this->config, 'datichuangguan.secret');
+        }
 
         $response = $this->client->request('GET', $accessTokenUrl, [
             'query' => [
@@ -255,7 +260,7 @@ class WechatUtils
      * @param [String] $code
      * @return OAuth
      */
-    public static function bindWechat($user, $unionId = null, $code = null, $version = 'v1')
+    public static function bindWechat($user, $unionId = null, $code = null, $version = 'v1', $platform)
     {
         //2.4.2之前版本用的微信登录接口
         if ($version == 'v1') {
@@ -264,7 +269,7 @@ class WechatUtils
 
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         //获取微信token
-        $accessTokens = WechatUtils::getInstance()->accessToken($code);
+        $accessTokens = WechatUtils::getInstance()->accessToken($code, $platform);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
 
         $oauthModel = new OAuth;

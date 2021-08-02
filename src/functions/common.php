@@ -602,5 +602,5 @@ function haveEmoji($str)
 
 function is_base64($str)
 {
-    return (bool) preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $str);
+    return base64_encode(base64_decode($str, true)) === $str;
 }

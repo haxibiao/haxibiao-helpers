@@ -128,7 +128,7 @@ class WechatUtils
 
         } else {
             //是否存在设备黑名单
-            User::checkUserDevice();
+            \App\User::checkUserDevice();
             //随机分配了一个密码
             $password = Str::random(12);
             if (empty($uuid)) {

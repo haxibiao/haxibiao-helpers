@@ -110,7 +110,7 @@ class WechatUtils
      * @param [String] $code
      * @return User
      */
-    public static function auth($code, $platform)
+    public static function auth($code, $platform, $uuid = null)
     {
         $accessTokens = WechatUtils::getInstance()->accessToken($code, $platform);
 
@@ -126,16 +126,33 @@ class WechatUtils
                 return failed_response('授权失败,参数错误');
             }
 
-            return successful_response(['user' => [
-                'id'        => $user->id,
-                'api_token' => $user->api_token,
-                'account'   => $user->account,
-                // 'unionid'   => $accessTokens['unionid'],
-                'openid'    => $accessTokens['openid'],
-            ]], 200);
+        } else {
+            //是否存在设备黑名单
+            User::checkUserDevice();
+            //随机分配了一个密码
+            $password = Str::random(12);
+            if (empty($uuid)) {
+                return failed_response("登录失败，请换其他方式登录");
+            }
+
+            //创建新用户 && 初始化登录信息
+            $user = User::createUser(User::DEFAULT_NAME, $uuid, $password);
+            OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token'], 1));
+
+            //同步wallet OpenId
+            $wallet          = Wallet::firstOrNew(['user_id' => $user->id]);
+            $wallet->open_id = $accessTokens['openid'];
+            $wallet->save();
         }
 
-        return successful_response($accessTokens, 200);
+        return successful_response(['user' => [
+            'id'        => $user->id,
+            'api_token' => $user->api_token,
+            'account'   => $user->account,
+            // 'unionid'   => $accessTokens['unionid'],
+            'openid'    => $accessTokens['openid'],
+        ]], 200);
+
     }
 
     /**

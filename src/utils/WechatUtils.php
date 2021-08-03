@@ -125,6 +125,9 @@ class WechatUtils
             if ($user->isDegregister()) {
                 return failed_response('授权失败,参数错误');
             }
+            if ($user->deleted_at) {
+                return failed_response('账号已被删除，请联系管理员');
+            }
 
         } else {
             //是否存在设备黑名单

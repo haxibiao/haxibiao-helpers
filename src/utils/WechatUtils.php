@@ -136,7 +136,10 @@ class WechatUtils
             }
 
             //创建新用户 && 初始化登录信息
-            $user = User::createUser(User::DEFAULT_NAME, $uuid, $password);
+            $user = User::where('uuid', $uuid)->where('status', User::ENABLE_STATUS)->first();
+            if (empty($user)) {
+                $user = User::createUser(User::DEFAULT_NAME, $uuid, $password);
+            }
             OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token'], 1));
 
             //同步wallet OpenId

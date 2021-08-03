@@ -139,7 +139,7 @@ class WechatUtils
             }
 
             //创建新用户 && 初始化登录信息
-            $user = User::where('uuid', $uuid)->where('status', User::ENABLE_STATUS)->first();
+            $user = User::where('uuid', $uuid)->where('status', User::ENABLE_STATUS)->whereNull('deleted_at')->first();
             if (empty($user)) {
                 $user = User::createUser(User::DEFAULT_NAME, $uuid, $password);
             }

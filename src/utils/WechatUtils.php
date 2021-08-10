@@ -236,9 +236,9 @@ class WechatUtils
 
         //同步wallet OpenId
         if (class_exists('\App\Wallet')) {
-            $wallet = \App\Wallet::firstOrNew(['user_id' => $user->id]);
+            $wallet = \App\Wallet::firstOrNew(['user_id' => $user->id, 'type' => Wallet::RMB_TYPE]);
         } else {
-            $wallet = Wallet::firstOrNew(['user_id' => $user->id]);
+            $wallet = Wallet::firstOrNew(['user_id' => $user->id, 'type' => Wallet::RMB_TYPE]);
         }
         $wallet->open_id = $accessTokens['openid'];
         $wallet->save();

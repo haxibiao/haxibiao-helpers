@@ -452,9 +452,15 @@ function getLatestAppVersion()
 function get_sub_domain($sub = true)
 {
     $host = request()->getHost();
-    //兼容本地开发域名配置习惯
+    //剔除本地开发环境域名前后缀
     if (starts_with($host, "l.")) {
         $host = str_replace("l.", "", $host);
+    }
+    if (ends_with($host, ".dev")) {
+        $host = str_replace(".dev", "", $host);
+    }
+    if (ends_with($host, ".test")) {
+        $host = str_replace(".test", "", $host);
     }
 
     $host_parts  = explode('.', $host);
@@ -536,7 +542,7 @@ function hasBadWords($text)
     try {
         $badWords      = file_get_contents(base_path('filter-question-keywords.json'));
         $badWordsArray = json_decode($badWords, true);
-    } catch (\Exception $ex) {
+    } catch (\Exception$ex) {
         return false;
     }
 

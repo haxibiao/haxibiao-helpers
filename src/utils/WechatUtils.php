@@ -356,4 +356,21 @@ class WechatUtils
         $user->avatar = cdnurl($path);
         $user->save();
     }
+
+    public function refreshToken($appId, $refreshToken)
+    {
+        $api = 'https://api.weixin.qq.com/sns/oauth2/refresh_token';
+
+        $response = $this->client->request('GET', $api, [
+            'query' => [
+                'appid'         => $appId,
+                'refresh_token' => $refreshToken,
+                'grant_type'    => 'refresh_token',
+            ],
+        ]);
+
+        $result = $response->getbody()->getContents();
+
+        return empty($result) ? null : json_decode($result, true);
+    }
 }

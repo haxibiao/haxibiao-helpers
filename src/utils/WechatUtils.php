@@ -223,7 +223,7 @@ class WechatUtils
 
         $oauthModel = new OAuth;
         if (\method_exists($oauthModel, 'store')) {
-            $oAuth = OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']));
+            $oAuth = OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']), 1, $appid);
             throw_if($oAuth->user_id != $user->id, UserException::class, '绑定失败,该微信已绑定其他账户!');
         } else {
             //建立oauth关联
@@ -281,7 +281,7 @@ class WechatUtils
         $accessTokens         = $wechatIns->accessToken($code, $appid, $secret);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
 
-        $oAuth = OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']));
+        $oAuth = OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']), 1, $appid);
         throw_if($oAuth->user_id != $user->id, UserException::class, '绑定失败,该微信已绑定其他账户!');
 
         //同步wallet OpenId
@@ -355,22 +355,5 @@ class WechatUtils
         Storage::cloud()->put($path, $stream);
         $user->avatar = cdnurl($path);
         $user->save();
-    }
-
-    public function refreshToken($appId, $refreshToken)
-    {
-        $api = 'https://api.weixin.qq.com/sns/oauth2/refresh_token';
-
-        $response = $this->client->request('GET', $api, [
-            'query' => [
-                'appid'         => $appId,
-                'refresh_token' => $refreshToken,
-                'grant_type'    => 'refresh_token',
-            ],
-        ]);
-
-        $result = $response->getbody()->getContents();
-
-        return empty($result) ? null : json_decode($result, true);
     }
 }

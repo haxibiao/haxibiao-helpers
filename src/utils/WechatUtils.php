@@ -216,7 +216,9 @@ class WechatUtils
 
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         //获取微信token
-        $accessTokens = WechatUtils::getInstance()->accessToken($code, $platform);
+        $wechatIns            = WechatUtils::getInstance();
+        list($appid, $secret) = $wechatIns->getWechatAppConfig($platform);
+        $accessTokens         = $wechatIns->accessToken($code, $appid, $secret);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
 
         $oauthModel = new OAuth;
@@ -274,7 +276,9 @@ class WechatUtils
     {
         throw_if(empty($code), UserException::class, '绑定失败,参数错误!');
         //获取微信token
-        $accessTokens = WechatUtils::getInstance()->accessToken($code);
+        $wechatIns            = WechatUtils::getInstance();
+        list($appid, $secret) = $wechatIns->getWechatAppConfig();
+        $accessTokens         = $wechatIns->accessToken($code, $appid, $secret);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
 
         $oAuth = OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token']));
@@ -325,7 +329,9 @@ class WechatUtils
     public static function signInOAuth($code)
     {
         //获取微信token
-        $accessTokens = WechatUtils::$instance->accessToken($code);
+        $wechatIns            = WechatUtils::getInstance();
+        list($appid, $secret) = $wechatIns->getWechatAppConfig();
+        $accessTokens         = $wechatIns->accessToken($code, $appid, $secret);
         throw_if(!Arr::has($accessTokens, ['unionid', 'openid']), UserException::class, '授权失败,请稍后再试!');
         //建立oauth关联
         $user = OAuth::findWechatUser($unionId);

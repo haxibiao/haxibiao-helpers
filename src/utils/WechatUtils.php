@@ -40,13 +40,28 @@ class WechatUtils
     /**
      * 获取微信用户access_token
      *
-     * @param [String] $code
+     * @param String $code
      * @return Array
      */
-    public function accessToken($code, $platform = 'dazhuan')
+    public function accessToken($code, $appid, $secret)
     {
         $accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token';
+        $response       = $this->client->request('GET', $accessTokenUrl, [
+            'query' => [
+                'grant_type' => 'authorization_code',
+                'code'       => $code,
+                'appid'      => $appid,
+                'secret'     => $secret,
+            ],
+        ]);
 
+        $result = $response->getbody()->getContents();
+
+        return empty($result) ? null : json_decode($result, true);
+    }
+
+    public function getWechatAppConfig($platform = null)
+    {
         //默认使用答赚安卓版Wechat
         $appid  = Arr::get($this->config, 'wechat_app.appid');
         $secret = Arr::get($this->config, 'wechat_app.secret');
@@ -61,18 +76,7 @@ class WechatUtils
             $secret = Arr::get($this->config, 'datichuangguan.secret');
         }
 
-        $response = $this->client->request('GET', $accessTokenUrl, [
-            'query' => [
-                'grant_type' => 'authorization_code',
-                'code'       => $code,
-                'appid'      => $appid,
-                'secret'     => $secret,
-            ],
-        ]);
-
-        $result = $response->getbody()->getContents();
-
-        return empty($result) ? null : json_decode($result, true);
+        return [$appid, $secret];
     }
 
     /**
@@ -112,7 +116,9 @@ class WechatUtils
      */
     public static function auth($code, $platform, $uuid = null)
     {
-        $accessTokens = WechatUtils::getInstance()->accessToken($code, $platform);
+        $wechatIns            = WechatUtils::getInstance();
+        list($appid, $secret) = $wechatIns->getWechatAppConfig($platform);
+        $accessTokens         = $wechatIns->accessToken($code, $appid, $secret);
 
         if (!is_array($accessTokens) || !array_key_exists('unionid', $accessTokens) || !array_key_exists('openid', $accessTokens)) {
             return failed_response('授权失败,参数错误');
@@ -143,7 +149,7 @@ class WechatUtils
             if (empty($user)) {
                 $user = User::createUser(User::DEFAULT_NAME, $uuid, $password);
             }
-            OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token'], 1));
+            OAuth::store($user->id, 'wechat', $accessTokens['openid'], $accessTokens['unionid'], Arr::only($accessTokens, ['openid', 'refresh_token'], 1, $appid));
 
             //同步wallet OpenId
             $wallet          = Wallet::firstOrNew(['user_id' => $user->id]);

@@ -52,6 +52,7 @@ function cdn_domain()
     if (blank($cdn_domain)) {
         $cdn_domain = env('APP_DOMAIN');
     }
+    info('头像:' .$cdn_domain);
     return $cdn_domain;
 }
 

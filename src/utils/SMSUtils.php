@@ -39,7 +39,7 @@ class SMSUtils
             ->first();
     }
 
-    public static function sendVerificationCode($account, $code = null, $action): VerificationCode
+    public static function sendVerificationCode($account, String $code = null, $action): VerificationCode
     {
         $code  = empty($code) ? random_str(4) : $code;
         $field = account($account);
@@ -74,7 +74,7 @@ class SMSUtils
         ];
         try {
             $senderResult = $field == 'phone' ? self::sendSMS($data) : self::sendMail($data);
-        } catch (\Exception $ex) {
+        } catch (\Exception$ex) {
             Log::error($ex);
             self::$verificationCode->delete();
             throw new UserException('验证码发送失败,请稍后再试！');

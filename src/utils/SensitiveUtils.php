@@ -401,6 +401,24 @@ class SensitiveUtils
         }
     }
 
+    public static function inWords(array $textArr)
+    {
+        if (self::getInstance()) {
+            foreach ($textArr as $text) {
+                if (in_array($text, self::$badWords)) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    public static function getWords()
+    {
+        if (self::getInstance()) {
+            return self::$badWords;
+        }
+    }
+
     /**
      * 敏感词开关
      */

@@ -16,6 +16,10 @@ class SensitiveUtils
      */
     protected $contentLength = 0;
 
+    private static $instance;
+
+    private static $badWords = [];
+
     /**
      * 敏感词单例
      *
@@ -47,6 +51,25 @@ class SensitiveUtils
     {
         $this->disturbList = $disturbList;
         return $this;
+    }
+
+    private function __construct()
+    {
+        $file = $this->file();
+        if (file_exists($file)) {
+            $text           = file_get_contents($file);
+            $badWords       = explode("\n", $text);
+            self::$badWords = array_map(function ($text) {
+                $text = base64_decode($text);
+                $text = str_replace(["\n", "\r", "\n\r", '"', ';'], '', $text);
+                return $text;
+            }, $badWords);
+        }
+    }
+
+    public static function file($filePath = null)
+    {
+        return $filePath ? $filePath : dirname(__FILE__) . '/' . 'bad-word.txt';
     }
 
     /**
@@ -351,6 +374,31 @@ class SensitiveUtils
     private function checkDisturb($word)
     {
         return in_array($word, $this->disturbList);
+    }
+
+    public static function getInstance()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new static;
+        }
+        return self::$instance;
+    }
+
+    /**
+     * 补充敏感词
+     */
+    public static function addWord($text)
+    {
+        if (self::getInstance()) {
+            if (!in_array($text, self::$badWords)) {
+                $instance = self::getInstance();
+                $file     = $instance->file();
+                if (file_exists($file)) {
+                    $text = PHP_EOL . base64_encode($text);
+                    return file_put_contents($file, $text, FILE_APPEND);
+                }
+            }
+        }
     }
 
     /**

@@ -361,6 +361,19 @@ function getDeviceBrand()
     return request()->header('brand') ?: request()->get('brand');
 }
 
+function getDeviceRootBrand()
+{
+    $brand = getDeviceBrand();
+    if ($brand == "realme") {
+        $brand = "OPPO";
+    } else if ($brand == "HONOR") {
+        $brand = "HUAWEI";
+    } else if ($brand == "Redmi") {
+        $brand = 'Xiaomi';
+    }
+    return $brand;
+}
+
 //目前只有com.dianmoge 1.6版本开始传入这个header
 function getAppId()
 {
@@ -542,7 +555,7 @@ function hasBadWords($text)
     try {
         $badWords      = file_get_contents(base_path('filter-question-keywords.json'));
         $badWordsArray = json_decode($badWords, true);
-    } catch (\Exception$ex) {
+    } catch (\Exception $ex) {
         return false;
     }
 

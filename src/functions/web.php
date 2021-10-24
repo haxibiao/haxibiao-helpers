@@ -526,15 +526,18 @@ function get_domain()
 }
 
 //获取访客IP
-function getIp()
+function getIp($key = '')
 {
-    $ip = null;
-    if (getenv('HTTP_CLIENT_IP')) {
-        $ip = getenv('HTTP_CLIENT_IP');
-    } else if (getenv('HTTP_X_FORWARDED_FOR')) {
-        $ip = getenv('HTTP_X_FORWARDED_FOR');
-    } else if (getenv('REMOTE_ADDR')) {
-        $ip = getenv('REMOTE_ADDR');
+    // 优先查找指定选项IP
+    $ip = !empty($key) ? getenv($key) : '';
+    if (empty($ip)) {
+        if (getenv('HTTP_CLIENT_IP')) {
+            $ip = getenv('HTTP_CLIENT_IP');
+        } else if (getenv('HTTP_X_FORWARDED_FOR')) {
+            $ip = getenv('HTTP_X_FORWARDED_FOR');
+        } else if (getenv('REMOTE_ADDR')) {
+            $ip = getenv('REMOTE_ADDR');
+        }
     }
 
     return $ip;

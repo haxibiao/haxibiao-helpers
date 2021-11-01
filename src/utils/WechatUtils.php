@@ -129,7 +129,7 @@ class WechatUtils
         if (!is_null($user)) {
 
             if ($user->isDegregister()) {
-                return failed_response('授权失败,参数错误');
+                return failed_response('登录失败,该账户已被封禁!');
             }
             if ($user->deleted_at) {
                 return failed_response('账号已被删除，请联系管理员');

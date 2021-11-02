@@ -377,7 +377,11 @@ function getDeviceRootBrand()
 //目前只有com.dianmoge 1.6版本开始传入这个header
 function getAppId()
 {
-    return request()->header('appid') ?: request()->get('appid');
+    $package = request()->header('appid') ?: request()->get('appid');
+    if (empty($package)) {
+        $package = request()->header('package') ?: request()->get('package');
+    }
+    return $package;
 }
 
 function is_giql()
@@ -558,7 +562,7 @@ function hasBadWords($text)
     try {
         $badWords      = file_get_contents(base_path('filter-question-keywords.json'));
         $badWordsArray = json_decode($badWords, true);
-    } catch (\Exception $ex) {
+    } catch (\Exception$ex) {
         return false;
     }
 

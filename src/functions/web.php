@@ -462,16 +462,14 @@ function getLatestAppVersion()
 }
 
 /**
- * 返回当前请求的主域名或二级域名
- *
- * @return string
+ * 返回当前请求的二级域名
  */
-function get_sub_domain($sub = true)
+function get_sub_domain()
 {
     $host = request()->getHost();
     //剔除本地开发环境域名前后缀
     if (starts_with($host, "l.")) {
-        $host = str_replace("l.", "", $host);
+        $host = substr($host, 2);
     }
     if (ends_with($host, ".dev")) {
         $host = str_replace(".dev", "", $host);
@@ -482,47 +480,28 @@ function get_sub_domain($sub = true)
 
     $host_parts  = explode('.', $host);
     $count_parts = count($host_parts);
-    //尊重二级域名
-    if ($sub) {
-        if ($count_parts >= 3) {
-            return $host_parts[$count_parts - 3] . '.' . $host_parts[$count_parts - 2] . '.' . $host_parts[$count_parts - 1];
-        }
+    //二级域名
+    if ($count_parts >= 3) {
+        return $host_parts[$count_parts - 3] . '.' . $host_parts[$count_parts - 2] . '.' . $host_parts[$count_parts - 1];
     }
-    //默认取顶级域名
+    //顶级域名
     if ($count_parts >= 2) {
         return $host_parts[$count_parts - 2] . '.' . $host_parts[$count_parts - 1];
     }
-
-    //本地host?
     return $host;
 }
 
 /**
- * 返回当前请求的主域名
- *
- * @return string
+ * 返回当前请求的域名
  */
-function get_domain()
+function get_domain($top = true)
 {
+    //二级域名
+    if (!$top) {
+        return get_sub_domain();
+    }
     $host       = request()->getHost();
     $host_parts = explode('.', $host);
-
-    //站群， 且未备案域名跳板回国内机房, 使用二级备案域名的情况
-    if (config('cms.multi_domains') && count($host_parts) >= 3) {
-        $sub_domain = get_sub_domain(true);
-        //需要seo配置里提前seed好这样使用代理二级域名的seo顶级域名
-        if ($seos = app('seos')) {
-            foreach ($seos as $seo) {
-                //实例参考 SeoSeeder
-                if ('proxy_domains' == $seo->group) {
-                    //匹配当前请求proxy过来的二级备案域名
-                    if ($seo->value == $sub_domain) {
-                        return $seo->name; //最后返回seo用的顶级域名
-                    }
-                }
-            }
-        }
-    }
     if (count($host_parts) >= 2) {
         return $host_parts[count($host_parts) - 2] . '.' . $host_parts[count($host_parts) - 1];
     }

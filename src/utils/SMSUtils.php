@@ -2,18 +2,18 @@
 
 namespace Haxibiao\Helpers\utils;
 
-use App\Exceptions\UserException;
-use App\Mail\SendNotificationMail;
 use App\User;
 use App\VerificationCode;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Overtrue\EasySms\EasySms;
+use App\Mail\SendNotificationMail;
+use Illuminate\Support\Facades\Log;
 use TencentCloud\Common\Credential;
-use TencentCloud\Common\Profile\ClientProfile;
-use TencentCloud\Common\Profile\HttpProfile;
-use TencentCloud\Sms\V20190711\Models\SendSmsRequest;
+use Illuminate\Support\Facades\Mail;
 use TencentCloud\Sms\V20190711\SmsClient;
+use TencentCloud\Common\Profile\HttpProfile;
+use Haxibiao\Breeze\Exceptions\UserException;
+use TencentCloud\Common\Profile\ClientProfile;
+use TencentCloud\Sms\V20190711\Models\SendSmsRequest;
 
 /**
  * SMS相关工具类（基于EasySms）
@@ -191,7 +191,7 @@ class SMSUtils
     {
         $gateways = config('sms.default.gateways');
         if (empty($gateways)) {
-            throw new \App\Exceptions\UserException('短信发送失败,请联系官方人员！');
+            throw new UserException('短信发送失败,请联系官方人员！');
         }
         $gateways  = reset($gateways);
         $templates = self::templates();

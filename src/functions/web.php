@@ -132,12 +132,22 @@ function isRobot()
 
 function isChrome()
 {
-    return strtolower(Agent::browser()) == 'chrome';
+    return strtolower(Agent::browser()) === 'chrome';
 }
 
 function isPhone()
 {
-    return true;
+    return Agent::isMobile();
+}
+
+function isWechat()
+{
+    return stripos(Agent::getUserAgent(), 'MicroMessenger') !== false;
+}
+
+function isQQ()
+{
+    return stripos(Agent::getUserAgent(), 'qq') !== false;
 }
 
 function get_active_css($path, $full_match = 0)

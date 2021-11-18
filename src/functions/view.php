@@ -6,19 +6,6 @@ use Haxibiao\Breeze\Breeze;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
-/**
- * cms站群模式时的seo友好的https+根域名的URL
- */
-function seo_url($path)
-{
-    if (is_prod_env() && config('cms.multi_domains')) {
-        $path = parse_url($path, PHP_URL_PATH);
-        $path = ltrim($path, "\/");
-        return "https://" . get_domain() . "/" . $path;
-    }
-    return url($path);
-}
-
 function GetURL($content)
 {
     $regex = '@(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))@';
@@ -38,7 +25,7 @@ function getUrlContent($url)
             'content'    => $resp->getBody()->getContents(),
             'statusCode' => $statusCode,
         ];
-    } catch (\Exception $th) {
+    } catch (\Exception$th) {
         return [
             'content'    => null,
             'statusCode' => 404,

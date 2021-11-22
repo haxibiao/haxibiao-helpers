@@ -471,6 +471,11 @@ function getLatestAppVersion()
     return '2.8';
 }
 
+function is_sub_domain()
+{
+    return count(explode('.', get_sub_domain())) === 3;
+}
+
 /**
  * 返回当前请求的二级域名
  */

@@ -29,7 +29,7 @@ function numberToReadable($number, $precision = 1, $divisors = null)
     $divisor   = pow(1000, 0);
     if (!isset($divisors)) {
         $divisors = [
-            $divisor     => $shorthand, // 1000^0 == 1
+            $divisor => $shorthand, // 1000^0 == 1
             pow(1000, 1) => 'K', // Thousand
             pow(1000, 2) => 'M', // Million
             pow(1000, 3) => 'B', // Billion
@@ -76,9 +76,15 @@ function get_ios_apk_link()
     return config('app.ios_link');
 }
 
+/**
+ * 提取域名的唯一名称，无后缀，无顶级域名，一般就是app的唯一标识的英文name
+ */
 function get_domain_key()
 {
-    return str_replace('.', '_', get_domain());
+    //尊重二级域名下的子域名做APP
+    $domain = get_sub_domain();
+    $parts  = explode('.', $domain);
+    return $parts[0] ?? env('APP_NAME');
 }
 
 function get_cn_weekday($carbon)

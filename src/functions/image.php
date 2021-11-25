@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -330,11 +331,14 @@ $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
     $extension = end($mime) ?? 'png';
     $imageName = uniqid();
     $filename = $imageName . '.' . $extension;
-    $tmp_path = '/tmp/' . $filename;
+    $tmp_path = public_path() . '/' . $filename;
+    \info($tmp_path);
     $imageMaker->save($tmp_path);
 
     //上传返回url
     $cloud_path = 'storage/app-' . env('APP_NAME') . '/mergeImages/' . $filename . '_' . time() . '.png';
     Storage::cloud()->put($cloud_path, $imageMaker->__toString());
+    //删除临时图片
+    File::delete($tmp_path);
     return cdnurl($cloud_path);
     }

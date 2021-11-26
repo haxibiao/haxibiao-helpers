@@ -100,14 +100,6 @@ $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
 
     $bg_h = 150; // 背景图片高度
 
-    $background = imagecreatetruecolor($bg_w, $bg_h); // 背景图片
-
-    $color = imagecolorallocate($background, 202, 201, 201); // 为真彩色画布创建白色背景，再设置为透明
-
-    imagefill($background, 0, 0, $color);
-
-    imageColorTransparent($background, $color);
-
     $pic_count = count($pic_list);
 
     $lineArr = array(); // 需要换行的位置
@@ -117,6 +109,8 @@ $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
     $space_y = 3;
 
     $line_x = 0;
+
+    $background = imagecreatetruecolor($bg_w, $bg_h); // 背景图片
 
     switch ($pic_count) {
     case 1: // 正中间
@@ -135,13 +129,14 @@ $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
 
     $start_x = 2;
 
-    $start_y = intval($bg_h / 4) + 3;
+    $start_y = 3;
 
     $pic_w = intval($bg_w / 2) - 5;
 
     $pic_h = intval($bg_h / 2) - 5;
 
     $space_x = 5;
+    $background = imagecreatetruecolor($bg_w, $pic_h); // 背景图片
 
     break;
 
@@ -158,6 +153,7 @@ $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
     $lineArr = array(2);
 
     $line_x = 4;
+    // $background = imagecreatetruecolor($bg_w, $pic_h); // 背景图片
 
     break;
 
@@ -306,6 +302,12 @@ $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
 
     // $pic_w,$pic_h copy后的高度和宽度
 
+    $color = imagecolorallocate($background, 202, 201, 201); // 为真彩色画布创建白色背景，再设置为透明
+
+    imagefill($background, 0, 0, $color);
+
+    imageColorTransparent($background, $color);
+
     imagecopyresized($background, $resource, $start_x, $start_y, 0, 0, $pic_w, $pic_h, imagesx($resource),
     imagesy($resource)); // 最后两个参数为原始图片宽度和高度，倒数两个参数为copy时的图片宽度和高度
 
@@ -332,7 +334,6 @@ $pattern_img = '/<img(.*?)src=\"(.*?)\"(.*?)>/';
     $imageName = uniqid();
     $filename = $imageName . '.' . $extension;
     $tmp_path = public_path() . '/' . $filename;
-    \info($tmp_path);
     $imageMaker->save($tmp_path);
 
     //上传返回url

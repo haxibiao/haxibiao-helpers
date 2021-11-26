@@ -81,10 +81,18 @@ function get_ios_apk_link()
  */
 function get_domain_key()
 {
-    //尊重二级域名下的子域名做APP
     $domain = get_sub_domain();
     $parts  = explode('.', $domain);
     return $parts[0] ?? env('APP_NAME');
+
+}
+
+/**
+ * APP对应的APK的包名
+ */
+function get_apk_package()
+{
+    return config('cms.apps')[get_sub_domain()]['package'] ?? env('APK_PACKAGE');
 }
 
 function get_cn_weekday($carbon)
@@ -230,8 +238,6 @@ function time_ago($time)
  * @Author      XXM
  * @DateTime    2019-02-10
  * @description [将字节转换成文件大小单位]
- * @param       [type]        $byteSize [description]
- * @return      [type]                  [description]
  */
 function formatBytes($byteSize)
 {
@@ -239,7 +245,6 @@ function formatBytes($byteSize)
     for ($i = 0; $byteSize >= 1024 && $i < 4; $i++) {
         $byteSize /= 1024;
     }
-
     return round($byteSize, 2) . $units[$i];
 }
 

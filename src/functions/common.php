@@ -29,7 +29,7 @@ function numberToReadable($number, $precision = 1, $divisors = null)
     $divisor   = pow(1000, 0);
     if (!isset($divisors)) {
         $divisors = [
-            $divisor => $shorthand, // 1000^0 == 1
+            $divisor     => $shorthand, // 1000^0 == 1
             pow(1000, 1) => 'K', // Thousand
             pow(1000, 2) => 'M', // Million
             pow(1000, 3) => 'B', // Billion
@@ -614,4 +614,39 @@ function haveEmoji($str)
 function is_base64($str)
 {
     return base64_encode(base64_decode($str, true)) === $str;
+}
+
+//生成唯一邀请码
+function enCode($number)
+{
+    $key  = "123456789abcd";
+    $len  = strlen($key);
+    $code = ''; // 邀请码
+    while ($number > 0) { // 转进制
+        $mod = $number % $len; // 求模
+
+        $number = ($number - $mod) / $len;
+        $code   = $key[$mod] . $code;
+    }
+
+    $code = str_pad($code, 4, '0', STR_PAD_LEFT); // 不足用0补充
+    return $code;
+}
+
+//解码邀请码
+function deCode($code)
+{
+    $key = "123456789abcd";
+    if (strrpos($code, '0') !== false) {
+        $code = substr($code, strrpos($code, '0') + 1);
+    }
+
+    $len    = strlen($code);
+    $code   = strrev($code);
+    $number = 0;
+    for ($i = 0; $i < $len; $i++) {
+        $number += strpos($key, $code[$i]) * pow(strlen($key), $i);
+    }
+
+    return $number;
 }

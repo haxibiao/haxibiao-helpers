@@ -619,7 +619,7 @@ function is_base64($str)
 //生成唯一邀请码
 function enCode($number)
 {
-    $key  = "123456789abcd";
+    $key  = "0BCDEFGHIJKMNPQRLSTUVWXYZ123456789";
     $len  = strlen($key);
     $code = ''; // 邀请码
     while ($number > 0) { // 转进制
@@ -629,16 +629,16 @@ function enCode($number)
         $code   = $key[$mod] . $code;
     }
 
-    $code = str_pad($code, 4, '0', STR_PAD_LEFT); // 不足用0补充
+    $code = str_pad($code, 4, 'A', STR_PAD_LEFT); // 不足用0补充
     return $code;
 }
 
 //解码邀请码
 function deCode($code)
 {
-    $key = "123456789abcd";
-    if (strrpos($code, '0') !== false) {
-        $code = substr($code, strrpos($code, '0') + 1);
+    $key = "0BCDEFGHIJKMNPQRLSTUVWXYZ123456789";
+    if (strrpos($code, 'A') !== false) {
+        $code = substr($code, strrpos($code, 'A') + 1);
     }
 
     $len    = strlen($code);

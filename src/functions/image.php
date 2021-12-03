@@ -114,9 +114,9 @@ use Intervention\Image\Facades\Image;
             case 2: // 中间位置并排
                 $start_x = 2;
                 $start_y = 3;
-                $pic_w = intval($bg_w / 2) - 5;
-                $pic_h = intval($bg_h / 2) - 5;
-                $space_x = 5;
+                $pic_w = intval($bg_w / 2) - 3;
+                $pic_h = intval($bg_h / 2) - 3;
+                $space_x = 1;
                 $background = imagecreatetruecolor($bg_w, $pic_h); // 背景图片
             break;
 

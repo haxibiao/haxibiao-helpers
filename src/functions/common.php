@@ -61,7 +61,7 @@ function get_apk_link($version = "")
         $app = 'damei';
     }
     $env = env('APP_ENV');
-    if ($env == 'prod' || $env == 'www') {
+    if ($env == 'prod' || $env == 'www' || $env == 'hotfix') {
         $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-release$version.apk";
     } else {
         $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-$env" . $version . ".apk";

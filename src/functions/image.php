@@ -267,7 +267,7 @@ function mergeImages($pic_list)
     $extension  = end($mime) ?? 'png';
     $imageName  = uniqid();
     $filename   = $imageName . '.' . $extension;
-    $tmp_path   = public_path() . '/' . $filename;
+    $tmp_path   = storage_path('/tmp/' . $filename);
     $imageMaker->save($tmp_path);
 
     //上传返回url

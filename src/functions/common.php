@@ -62,7 +62,8 @@ function get_apk_link($version = "")
     }
     $env = env('APP_ENV');
     if ($env == 'prod' || $env == 'www' || $env == 'hotfix') {
-        $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-release$version.apk";
+        // $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-release$version.apk";
+        $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/" . get_sub_domain() . "-release$version.apk";
     } else {
         $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-$env" . $version . ".apk";
     }

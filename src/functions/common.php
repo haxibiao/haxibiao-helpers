@@ -63,7 +63,7 @@ function get_apk_link($version = "")
     $env = env('APP_ENV');
     if ($env == 'prod' || $env == 'www' || $env == 'hotfix') {
         $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/$app-release$version.apk";
-        if (str_contains(get_sub_domain(), "dati.dongmiaomu.com")) {
+        if (str_contains(get_sub_domain(), "dati.dongmiaomu.com") || str_contains(get_sub_domain(), "dati.haxifang.com")) {
             $link = "http://dtzq-1251052432.cos.ap-shanghai.myqcloud.com/" . get_sub_domain() . "-release$version.apk";
         }
     } else {

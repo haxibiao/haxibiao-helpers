@@ -18,7 +18,8 @@ $q =new  QPayUtils();
 $q->pay($order)
 >
 如图：
-![image-20210706004854830]($https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG476.jpeg)
+![image-20210706004854830](https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG475.jpeg)  
+
 ![image-20210706004854830](https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG476.jpeg)
 
 ### 3.返回参数说明
@@ -35,10 +36,10 @@ https://github.com/tension/QPay-PHP-SDK
 ### 5.其他
 .env 配置
 >
-QQ_MCH_ID=1602543245
-QQ_OP_USER_ID=1602543245
-QQ_OP_USER_PASSWD=C9E95C4F0E7E93E9EE69BBD143E98B1B
-WITHDRAW_SERVER_IP=127.0.0.1
-QQ_APP_KEY=EDPNvEYmTBs5YceQWgKucQHIB0fhBlAP
-QQ_APP_ID=1108307538
+QQ_MCH_ID=1602543245  
+QQ_OP_USER_ID=1602543245   
+QQ_OP_USER_PASSWD=C9E95C4F0E7E93E9EE69BBD143E98B1B   
+WITHDRAW_SERVER_IP=127.0.0.1   
+QQ_APP_KEY=EDPNvEYmTBs5YceQWgKucQHIB0fhBlAP  
+QQ_APP_ID=1108307538  
 >

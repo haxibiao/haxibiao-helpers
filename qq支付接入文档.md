@@ -18,11 +18,11 @@ $q =new  QPayUtils();
 $q->pay($order)
 >
 如图：
-https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG476.jpeg
-https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG476.jpeg
+![image-20210706004854830]($https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG476.jpeg)
+![image-20210706004854830](https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG476.jpeg)
 
 ### 3.返回参数说明
-https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG477.jpeg
+![image-20210706004854830](https://haxibiao-1251052432.cos.ap-guangzhou.myqcloud.com/images/WechatIMG477.jpeg)
 
 ### 4.相关链接   
 
